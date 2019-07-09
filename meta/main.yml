@@ -9,7 +9,7 @@ galaxy_info:
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker
 
-  license: apache-2
+  license: Apache-2.0
 
   min_ansible_version: 1.2
 
@@ -30,29 +30,23 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - trusty
-        - xenial
-        - bionic
-        - disco dingo
+        - all
     - name: Debian
       versions:
-        - wheezy
-        - jessie
-        - stretch
-    - name: Amazon
         - all
+    - name: Amazon
+      versions:
+        - all
+    - name: Fedora
     - name: EL
       versions:
-        - 8
-        - 7
-        - 6
+        - all
+    - name: SLES
+      versions:
+        - all
     - name: opensuse
       versions:
-        - 12
-        - 13
-    - name: SLES
-        - 12
-        - 15
+        - all
 
   galaxy_tags: [vulnerability, management, security ]
   # List tags for your role here, one per line. A tag is a keyword that describes
