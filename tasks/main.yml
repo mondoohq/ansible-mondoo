@@ -26,19 +26,12 @@
   become: true
   when: not ansible_check_mode
 
-- name: Enable collector mode
-  lineinfile:
-    path: /etc/opt/mondoo/mondoo.yml
-    regexp: '^collector'
-    line: "collector: http"
-  become: true
-  when: not ansible_check_mode
-
 # ensure systemd service is started and enableds
 - name: Ensure mondoo service is running
   systemd:
-    name: mondoo.timer
+    name: mondoo.service
     state: started
     enabled: yes
   become: true
   when: not ansible_check_mode
+  # notify: restart mondoo-service
