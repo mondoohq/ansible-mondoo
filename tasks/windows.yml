@@ -1,0 +1,54 @@
+# download the latest json to fetch the latest released version
+
+- name: determine latest released version
+  ansible.windows.win_uri:
+    url: "{{ latest_version_url }}"
+    return_content: yes
+  register: latest_jsondata
+
+- name: log latest version
+  ansible.builtin.debug:
+    var: latest_jsondata.json
+
+- name: determine latest pkg version
+  set_fact:
+    latest_pkg_version_url: "{{ latest_jsondata.json | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "files[*].filename | [?contains(@, 'msi')] | [0]"
+
+- name: log latest version
+  ansible.builtin.debug:
+    var: latest_pkg_version_url
+
+# download and install msi
+# we do register as part of the msi workflow to support reregistration more easily
+- name: install mondoo msi package
+  win_package:
+    path: "{{ latest_pkg_version_url }}"
+    state: present
+
+- name: unregister mondoo agent
+  # unregisters an existing agent if it was registered
+  ansible.windows.win_command: mondoo.exe unregister --force --config C:\\ProgramData\\Mondoo\\mondoo.yml
+  args:
+    chdir: "C:\\Program Files\\Mondoo\\service"
+    # only run the command if no config file exists
+    creates: C:\ProgramData\Mondoo\mondoo.yml
+  when: force_registration == true
+  # if the credentials are already invalid, the command will throw an error
+  ignore_errors: yes
+
+- name: remove existing credentials
+  # ensure no configuration file exists if force mode was activated
+  ansible.windows.win_file:
+    state: absent
+    path: C:\ProgramData\Mondoo\mondoo.yml
+  when: force_registration == true
+
+- name: register mondoo agent
+  ansible.windows.win_command: mondoo.exe register --config C:\\ProgramData\\Mondoo\\mondoo.yml --token {{ registration_token }}
+  args:
+    chdir: "C:\\Program Files\\Mondoo\\service"
+    # only run the command if no config file exists (was not deleted in non-force mode)
+    creates: C:\ProgramData\Mondoo\mondoo.yml
+  when: not ansible_check_mode
