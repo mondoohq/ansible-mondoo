@@ -58,8 +58,7 @@
   when: not ansible_check_mode
   notify: restart mondoo-service
 
-- name: ensure mondoo service is running
-  # ensures the systemd service is started and enabled
+- name: ensure mondoo service is enabled and running
   ansible.builtin.systemd:
     name: mondoo.service
     state: started
