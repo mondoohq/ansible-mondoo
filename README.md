@@ -29,7 +29,7 @@ The role is published at Ansible Galaxy: [Mondoo role](https://galaxy.ansible.co
 | -------------- | ------------- | -----------------------------------|
 | `registration_token_retrieval` | `manual` | `manual` requires to set ``registration_token`. `cli` call a local Mondoo Client to automatically retrieve a new registration token |
 | `registration_token`|  n/a | manually set the Mondoo Registration Token that is used to register new Mondoo Clients
-| `force_registration`|  true | forces re-registration for each run
+| `force_registration`|  false | forces re-registration for each run
 
 ## Dependencies
 

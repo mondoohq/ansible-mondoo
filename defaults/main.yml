@@ -4,7 +4,7 @@
 latest_version_url: https://releases.mondoo.io/mondoo/latest.json
 
 # option to force a re-registration
-force_registration: true
+force_registration: false
 
 # we support 'manual' and 'cli'
 # if 'manual' is set, the user need to set `registration_token`
