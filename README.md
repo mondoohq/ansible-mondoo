@@ -1,35 +1,35 @@
-# Mondoo Ansible Role
+# Mondoo Client Ansible Role
 
-This role installs the Mondoo Client on Linux and Windows servers. 
+This role installs the Mondoo Client on Linux and Windows servers.
 
 It does:
 
- * Installs the signed `mondoo` package
- * Registers Mondoo Client with Mondoo Platform
- * Enables the systemd service
+- Installs the signed `mondoo` package
+- Registers Mondoo Client with Mondoo Platform
+- Enables the systemd service
 
 It supports:
 
- * RedHat & CentOS
- * Ubuntu
- * Amazon Linux
- * Debian
- * Suse & openSUSE
- * Windows 10, 2016, 2019, 2022
+- RedHat & CentOS
+- Ubuntu
+- Amazon Linux
+- Debian
+- Suse & openSUSE
+- Windows 10, 2016, 2019, 2022
 
-The role is published at Ansible Galaxy: [Mondoo role](https://galaxy.ansible.com/mondoolabs/mondoo).
+The role is published at Ansible Galaxy: [Mondoo role](https://galaxy.ansible.com/mondoo/client).
 
 ## Requirements
 
- * Ansible > 2.5
+- Ansible > 2.5
 
 ## Role Variables
 
-| Name           | Default Value | Description                        |
-| -------------- | ------------- | -----------------------------------|
-| `registration_token_retrieval` | `manual` | `manual` requires to set ``registration_token`. `cli` call a local Mondoo Client to automatically retrieve a new registration token |
-| `registration_token`|  n/a | manually set the Mondoo Registration Token that is used to register new Mondoo Clients
-| `force_registration`|  false | forces re-registration for each run
+| Name                           | Default Value | Description                                                                                                                         |
+| ------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `registration_token_retrieval` | `manual`      | `manual` requires to set ``registration_token`. `cli` call a local Mondoo Client to automatically retrieve a new registration token |
+| `registration_token`           | n/a           | manually set the Mondoo Registration Token that is used to register new Mondoo Clients                                              |
+| `force_registration`           | false         | forces re-registration for each run                                                                                                 |
 
 ## Dependencies
 
@@ -53,7 +53,7 @@ This playbook demonstrates how to use the Mondoo role to install the Mondoo Clie
 - hosts: mondoo_linux
   become: yes
   roles:
-    - role: mondoolabs.mondoo
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
 ```
@@ -61,17 +61,16 @@ This playbook demonstrates how to use the Mondoo role to install the Mondoo Clie
 In addition we support the following variables:
 
 | variable                      | description                                                               |
-|-------------------------------|---------------------------------------------------------------------------|
+| ----------------------------- | ------------------------------------------------------------------------- |
 | `force_registration: true`    | set to true if you want to re-register existing Mondoo Clients            |
 | `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
-
 
 ```yaml
 ---
 - hosts: mondoo_linux
   become: yes
   roles:
-    - role: mondoolabs.mondoo
+    - role: mondoohq.mondoo-client
       vars:
         registration_token: "changeme"
         force_registration: true
@@ -82,7 +81,7 @@ In addition we support the following variables:
 
 ```bash
 # download mondoo role
-ansible-galaxy install mondoolabs.mondoo
+ansible-galaxy install mondoo.mondoo-client
 # apply the playbook
 ansible-playbook -i hosts playbook.yml
 ```
@@ -101,6 +100,7 @@ If you are using Windows, please read the ansible documentation about [WinRM set
 ```
 
 or if you are going to use ssh:
+
 ```ini
 3.235.247.76 ansible_port=22 ansible_connection=ssh ansible_user=admin ansible_shell_type=cmd
 ```
@@ -112,7 +112,7 @@ If you are targeting windows, the configuration is slightly different since `bec
 ```yaml
 - hosts: mondoo_windows
   roles:
-    - role: mondoolabs.mondoo
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: false
@@ -122,7 +122,7 @@ If you are targeting windows, the configuration is slightly different since `bec
 
 ```bash
 # download mondoo role
-ansible-galaxy install mondoolabs.mondoo
+ansible-galaxy install mondoo.client
 # apply the playbook
 ansible-playbook -i hosts playbook.yml
 ```
@@ -137,7 +137,7 @@ pip install python-vagrant
 pip install molecule-vagrant
 ```
 
-The `molecule` cli covers the test lifecycle: 
+The `molecule` cli covers the test lifecycle:
 
 ```bash
 # spin up the vms
@@ -155,7 +155,6 @@ molecule destroy
 ## Author
 
 Mondoo, Inc
-
 
 ## FAQ
 
