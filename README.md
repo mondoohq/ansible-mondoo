@@ -17,7 +17,7 @@ It supports:
 - Suse & openSUSE
 - Windows 10, 2016, 2019, 2022
 
-The role is published at Ansible Galaxy: [Mondoo role](https://galaxy.ansible.com/mondoo/client).
+The role is published at Ansible Galaxy: [Mondoo/Client role](https://galaxy.ansible.com/mondoo/client).
 
 ## Requirements
 
@@ -86,7 +86,7 @@ ansible-galaxy install mondoo.mondoo-client
 ansible-playbook -i hosts playbook.yml
 ```
 
-4. All instances [reported their vulnerability status](https://mondoo.app/)
+4. Log into the [Mondoo Console](https://console.mondoo.com) to view the scan results
 
 ## Apply Ansible Playbook to Amazon EC2 Windows instance
 
