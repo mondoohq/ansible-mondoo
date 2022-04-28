@@ -1,7 +1,7 @@
 ---
 # defaults file for mondoo
 
-latest_version_url: https://releases.mondoo.io/mondoo/latest.json
+latest_version_url: https://releases.mondoo.com/mondoo/latest.json
 
 # option to force a re-registration
 force_registration: false
@@ -15,13 +15,13 @@ registration_token_retrieval: "manual"
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 
 # deb repo
-mondoo_deb_repo: "deb https://releases.mondoo.io/debian/ stable main"
-mondoo_deb_gpgkey: "https://releases.mondoo.io/debian/pubkey.gpg"
+mondoo_deb_repo: "deb https://releases.mondoo.com/debian/ stable main"
+mondoo_deb_gpgkey: "https://releases.mondoo.com/debian/pubkey.gpg"
 
 # yum repo and keys
-mondoo_rpm_repo: "https://releases.mondoo.io/rpm/$basearch/"
-mondoo_rpm_gpgkey: "https://releases.mondoo.io/rpm/pubkey.gpg"
+mondoo_rpm_repo: "https://releases.mondoo.com/rpm/$basearch/"
+mondoo_rpm_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
 
 # zypper repo
-mondoo_zypper_repo: "https://releases.mondoo.io/rpm/{{ ansible_userspace_architecture }}/"
-mondoo_zypper_gpgkey: "https://releases.mondoo.io/rpm/pubkey.gpg"
+mondoo_zypper_repo: "https://releases.mondoo.com/rpm/{{ ansible_userspace_architecture }}/"
+mondoo_zypper_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
