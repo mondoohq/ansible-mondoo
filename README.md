@@ -176,3 +176,7 @@ fatal: [123.123.247.76]: FAILED! => {"ansible_facts": {}, "changed": false, "fai
 ```
 
 Ansible in combination with Win32-OpenSSH versions older than v7.9.0.0p1-Beta do not work when `powershell` is the shell type, set the shell type to `cmd`
+
+## Join the community!
+
+Join the [Mondoo Community GitHub Discussions](https://github.com/orgs/mondoohq/discussions) to collaborate on policy as code and security automation.
