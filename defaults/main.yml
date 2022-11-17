@@ -15,8 +15,9 @@ registration_token_retrieval: "manual"
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 
 # deb repo
-mondoo_deb_repo: "deb https://releases.mondoo.com/debian/ stable main"
+mondoo_deb_repo: "https://releases.mondoo.com/debian/ stable main"
 mondoo_deb_gpgkey: "https://releases.mondoo.com/debian/pubkey.gpg"
+mondoo_deb_gpgkey_dest: "/usr/share/keyrings/mondoo-archive-keyring.gpg"
 
 # yum repo and keys
 mondoo_rpm_repo: "https://releases.mondoo.com/rpm/$basearch/"

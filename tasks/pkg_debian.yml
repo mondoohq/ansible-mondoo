@@ -3,20 +3,27 @@
   apt:
     name: apt-transport-https
     state: present
+    update_cache: yes
   become: true
   when: not ansible_check_mode
 
-- name: install mondoo apt-key
-  apt_key:
-    id: "{{ mondoo_gpg_keyid }}"
+- name: Add Mondoo apt repository key.
+  ansible.builtin.get_url:
     url: "{{ mondoo_deb_gpgkey }}"
-    state: present
+    dest: "/etc/apt/trusted.gpg.d/mondoo.asc"
+    mode: '0644'
+    force: true
   become: true
   when: not ansible_check_mode
+
+- name: Pack Mondoo gpg key
+  command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
+  become: true
 
 - name: configure mondoo deb repository
   apt_repository:
-    repo: "{{ mondoo_deb_repo }}"
+    repo: "deb [signed-by={{ mondoo_deb_gpgkey_dest }}] {{ mondoo_deb_repo }}"
+    filename: "mondoo"
     state: "present"
     update_cache: yes
   become: true

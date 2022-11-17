@@ -4,6 +4,7 @@ collections:
 
 galaxy_info:
   role_name: client
+  namespace: mondoo
   author: Mondoo, Inc
   description: Install and configures Mondoo Client
   company: Mondoo, Inc

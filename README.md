@@ -77,6 +77,26 @@ In addition we support the following variables:
         ensure_managed_client: true
 ```
 
+If you want to use mondoo behind a proxy
+
+```yaml
+---
+- hosts: mondoo_linux
+  become: yes
+  vars:
+    proxy_env:
+      http_proxy: "http://192.168.56.1:3128"
+      https_proxy: "http://192.168.56.1:3128"
+
+  roles:
+    - role: mondoohq.mondoo-client
+      vars:
+        registration_token: "changeme"
+        force_registration: true
+        ensure_managed_client: true
+      environment: "{{proxy_env}}"
+```
+
 3. Run the playbook with the local hosts file
 
 ```bash

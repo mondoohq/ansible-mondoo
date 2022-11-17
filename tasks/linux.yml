@@ -58,10 +58,17 @@
   when: not ansible_check_mode
   notify: restart mondoo-service
 
+- name: Create Mondoo systemd service file
+  template:
+    src: templates/mondoo.service.j2
+    dest: /etc/systemd/system/mondoo.service
+  become: true
+
 - name: ensure mondoo service is enabled and running
   ansible.builtin.systemd:
     name: mondoo.service
     state: started
+    daemon_reload: yes
     enabled: yes
   become: true
   when: not ansible_check_mode
