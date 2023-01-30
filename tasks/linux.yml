@@ -1,40 +1,43 @@
 ---
 
 # install mondoo package which installs cnquery and cnspec
-- include_tasks: pkg_debian.yml
+- name: Install mondoo package on Debian
+  ansible.builtin.include_tasks: pkg_debian.yml
   when: ansible_os_family == "Debian"
 
-- include_tasks: pkg_rhel.yml
+- name: Install mondoo package on Red Hat
+  ansible.builtin.include_tasks: pkg_rhel.yml
   when: ansible_os_family == "RedHat"
 
-- include_tasks: pkg_suse.yml
+- name: Install mondoo package on Suse
+  ansible.builtin.include_tasks: pkg_suse.yml
   when: ansible_os_family == "Suse"
 
 - name: Create mondoo config directory
-  file:
+  ansible.builtin.file:
     dest: /etc/opt/mondoo
     state: directory
   become: true
   when: not ansible_check_mode
 
 - name: Logout cnquery and cnspec from Mondoo platform
-  command: cnspec logout --force --config /etc/opt/mondoo/mondoo.yml
+  ansible.builtin.command: cnspec logout --force --config /etc/opt/mondoo/mondoo.yml
   args:
     # only run the command if no config file exists
     creates: /etc/opt/mondoo/mondoo.yml
-  when: force_registration == true
+  when: force_registration
   # if the credentials are already invalid, the command will throw an error
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Remove existing credentials
   # ensure no configuration file exists if force mode was activated
-  file:
+  ansible.builtin.file:
     state: absent
     path: /etc/opt/mondoo/mondoo.yml
-  when: force_registration == true
+  when: force_registration
 
 - name: Login cnquery and cnspec with Mondoo platform
-  command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
+  ansible.builtin.command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
   args:
     # only run the command if no config file exists (was not deleted in non-force mode)
     creates: /etc/opt/mondoo/mondoo.yml
@@ -43,7 +46,7 @@
   notify: restart cnspec-service
 
 - name: Create cnspec systemd service file
-  template:
+  ansible.builtin.template:
     src: templates/cnspec.service.j2
     dest: /etc/systemd/system/cnspec.service
   become: true
@@ -67,6 +70,6 @@
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are managed
-  command: cnspec login
+  ansible.builtin.command: cnspec login
   become: true
-  when: (ensure_managed_client is not undefined and ensure_managed_client == true) and not ansible_check_mode
+  when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode

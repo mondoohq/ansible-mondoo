@@ -172,6 +172,18 @@ molecule login --host ubuntu
 molecule destroy
 ```
 
+For linting, we use `ansible-lint`:
+
+```bash
+pip3 install ansible-lint
+```
+
+Then you can see all local issues with:
+
+```
+ansible-lint
+```
+
 ## Author
 
 Mondoo, Inc
@@ -196,6 +208,15 @@ fatal: [123.123.247.76]: FAILED! => {"ansible_facts": {}, "changed": false, "fai
 ```
 
 Ansible in combination with Win32-OpenSSH versions older than v7.9.0.0p1-Beta do not work when `powershell` is the shell type, set the shell type to `cmd`
+
+
+**Error: `You need to install 'jmespath' prior to running json_query filter"`**
+
+Make sure jmespath is installed in the same python environment as ansible:
+
+```bash
+pip install jmespath
+```
 
 ## Join the community!
 

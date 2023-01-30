@@ -4,7 +4,4 @@
   roles:
     - role: ansible-mondoo
   vars:
-    registration_token_retrieval: "manual"
     registration_token: "setregistrationtokenhere"
-
-    # registration_token_retrieval: "cli"

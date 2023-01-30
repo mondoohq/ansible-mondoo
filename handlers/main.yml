@@ -1,7 +1,7 @@
 ---
 # handlers file for cnspec service
 
-- name: restart cnspec-service
+- name: Restart cnspec-service
   ansible.builtin.systemd:
     name: cnspec
     state: restarted
