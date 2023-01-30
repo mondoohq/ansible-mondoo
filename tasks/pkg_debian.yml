@@ -1,6 +1,7 @@
 ---
+
 - name: Install apt-transport-https
-  apt:
+  ansible.builtin.apt:
     name: apt-transport-https
     state: present
     update_cache: yes
@@ -17,11 +18,11 @@
   when: not ansible_check_mode
 
 - name: Pack Mondoo gpg key
-  command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
+  ansible.builtin.command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
   become: true
 
 - name: Configure Mondoo deb repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [signed-by={{ mondoo_deb_gpgkey_dest }}] {{ mondoo_deb_repo }}"
     filename: "mondoo"
     state: "present"
@@ -30,7 +31,7 @@
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are installed
-  apt:
+  ansible.builtin.apt:
     name: mondoo
     state: latest
     update_cache: yes

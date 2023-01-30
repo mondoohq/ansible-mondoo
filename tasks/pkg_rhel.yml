@@ -1,17 +1,18 @@
 ---
+
 - name: Install Mondoo rpm repository
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: mondoo
     description: Mondoo Repository
     baseurl: "{{ mondoo_rpm_repo }}"
     enabled: yes
-    gpgcheck: yes
+    gpgcheck: true
     gpgkey: "{{ mondoo_rpm_gpgkey }}"
   become: true
   when: not ansible_check_mode
 
 - name: Ensure Mondoo package is installed
-  yum:
+  ansible.builtin.yum:
     name: mondoo
     update_cache: yes
     state: latest

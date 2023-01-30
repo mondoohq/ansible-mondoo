@@ -2,19 +2,19 @@
 
 # workaround since zypper_repository does not support gpgkey value
 - name: Download Mondoo rpm key
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ mondoo_zypper_gpgkey }}"
     dest: /tmp/MONDOO_RPM_KEY.pub
 
 - name: "Install Mondoo gpg key"
-  rpm_key:
+  ansible.builtin.rpm_key:
     state: present
     key: /tmp/MONDOO_RPM_KEY.pub
   become: true
   when: not ansible_check_mode
 
 - name: Install Mondoo zypper repository
-  zypper_repository:
+  community.general.zypper_repository:
     name: mondoo
     description: Mondoo Repository
     repo: "{{ mondoo_zypper_repo }}"
@@ -25,7 +25,7 @@
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are installed
-  zypper:
+  community.general.zypper:
     name: mondoo
     state: latest
   become: true

@@ -1,3 +1,5 @@
+---
+
 # download the latest json to fetch the latest released version
 
 - name: Determine latest released version
@@ -13,7 +15,7 @@
   when: pkg_version_url is undefined
 
 - name: Determine latest pkg version
-  set_fact:
+  ansible.builtin.set_fact:
     pkg_version_url: "{{ latest_jsondata.json | json_query(jmesquery) }}"
   vars:
     jmesquery: "files[*].filename | [?contains(@, 'msi')] | [0]"
@@ -26,7 +28,7 @@
 # download and install msi
 # we do register as part of the msi workflow to support reregistration more easily
 - name: Install Mondoo msi package
-  win_package:
+  ansible.windows.win_package:
     path: "{{ pkg_version_url }}"
     state: present
 
@@ -36,16 +38,16 @@
     chdir: "C:\\Program Files\\Mondoo"
     # only run the command if no config file exists
     creates: C:\ProgramData\Mondoo\mondoo.yml
-  when: force_registration == true
+  when: force_registration
   # if the credentials are already invalid, the command will throw an error
-  ignore_errors: yes
+  ignore_errors: true
 
 - name: Remove existing credentials
   # ensure no configuration file exists if force mode was activated
   ansible.windows.win_file:
     state: absent
     path: C:\ProgramData\Mondoo\mondoo.yml
-  when: force_registration == true
+  when: force_registration
 
 - name: Login cnquery and cnspec
   ansible.windows.win_command: cnspec.exe login --config C:\\ProgramData\\Mondoo\\mondoo.yml --token {{ registration_token }}
@@ -56,7 +58,7 @@
   when: not ansible_check_mode
 
 - name: Set Mondoo startup mode to auto and ensure it is started
-  win_service:
+  ansible.windows.win_service:
     name: Mondoo
     start_mode: auto
     state: started
@@ -66,4 +68,4 @@
   ansible.windows.win_command: cnspec.exe login
   args:
     chdir: "C:\\Program Files\\Mondoo"
-  when: (ensure_managed_client is not undefined and ensure_managed_client == true) and not ansible_check_mode
+  when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode
