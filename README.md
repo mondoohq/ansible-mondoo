@@ -1,12 +1,12 @@
-# Mondoo Client Ansible Role
+# Mondoo Package Ansible Role
 
-This role installs the Mondoo Client on Linux and Windows servers.
+This role installs `cnquery` and `cnspec` on Linux and Windows servers.
 
 It does:
 
-- Installs the signed `mondoo` package
-- Registers Mondoo Client with Mondoo Platform
-- Enables the systemd service
+- Installs the signed `cnquery` and `cnspec` binaries
+- Registers `cnquery` and `cnspec` with Mondoo Platform
+- Enables the `cnspec` service on Linux and Windows
 
 It supports:
 
@@ -27,8 +27,8 @@ The role is published at Ansible Galaxy: [Mondoo/Client role](https://galaxy.ans
 
 | Name                           | Default Value | Description                                                                                                                         |
 | ------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `registration_token_retrieval` | `manual`      | `manual` requires to set ``registration_token`. `cli` call a local Mondoo Client to automatically retrieve a new registration token |
-| `registration_token`           | n/a           | manually set the Mondoo Registration Token that is used to register new Mondoo Clients                                              |
+| `registration_token_retrieval` | `manual`      | `manual` requires to set ``registration_token` |
+| `registration_token`           | n/a           | manually set the Mondoo Platform Registration Token that is used to register `cnquery` and `cnspec` |
 | `force_registration`           | false         | forces re-registration for each run                                                                                                 |
 
 ## Dependencies
@@ -37,12 +37,12 @@ This role has no role dependencies
 
 ## Example: Apply Ansible Playbook to Amazon EC2 Linux instance
 
-This playbook demonstrates how to use the Mondoo role to install the Mondoo Client on many instances:
+This playbook demonstrates how to use the Mondoo Package role to install `cnquery` and `cnspec` on many instances:
 
 1. Create a new `hosts` inventory. Add your host to the group.
 
 ```ini
-[mondoo_linux]
+[linux_hosts]
 54.172.7.243  ansible_user=ec2-user
 ```
 
@@ -50,7 +50,7 @@ This playbook demonstrates how to use the Mondoo role to install the Mondoo Clie
 
 ```yaml
 ---
-- hosts: mondoo_linux
+- hosts: linux_hosts
   become: yes
   roles:
     - role: mondoo.client
@@ -62,12 +62,12 @@ In addition we support the following variables:
 
 | variable                      | description                                                               |
 | ----------------------------- | ------------------------------------------------------------------------- |
-| `force_registration: true`    | set to true if you want to re-register existing Mondoo Clients            |
+| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`            |
 | `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
 
 ```yaml
 ---
-- hosts: mondoo_linux
+- hosts: linux_hosts
   become: yes
   roles:
     - role: mondoo.client
@@ -81,7 +81,7 @@ If you want to use mondoo behind a proxy
 
 ```yaml
 ---
-- hosts: mondoo_linux
+- hosts: linux_hosts
   become: yes
   vars:
     proxy_env:
@@ -97,7 +97,7 @@ If you want to use mondoo behind a proxy
       environment: "{{proxy_env}}"
 ```
 
-3. Run the playbook with the local hosts file
+1. Run the playbook with the local hosts file
 
 ```bash
 # download mondoo role
@@ -115,7 +115,7 @@ If you are using Windows, please read the ansible documentation about [WinRM set
 1. Create a new `hosts` inventory. Add your host to the group.
 
 ```ini
-[mondoo_windows]
+[windows_hosts]
 123.123.247.76 ansible_port=5986 ansible_connection=winrm ansible_user=Administrator ansible_password=changeme ansible_shell_type=powershell ansible_winrm_server_cert_validation=ignore
 ```
 
@@ -130,7 +130,7 @@ or if you are going to use ssh:
 If you are targeting windows, the configuration is slightly different since `become` needs to be deactivated:
 
 ```yaml
-- hosts: mondoo_windows
+- hosts: windows_hosts
   roles:
     - role: mondoo.client
       vars:
