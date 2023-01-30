@@ -1,5 +1,5 @@
 ---
-- name: install apt-transport-https
+- name: Install apt-transport-https
   apt:
     name: apt-transport-https
     state: present
@@ -20,7 +20,7 @@
   command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
   become: true
 
-- name: configure mondoo deb repository
+- name: Configure Mondoo deb repository
   apt_repository:
     repo: "deb [signed-by={{ mondoo_deb_gpgkey_dest }}] {{ mondoo_deb_repo }}"
     filename: "mondoo"
@@ -29,7 +29,7 @@
   become: true
   when: not ansible_check_mode
 
-- name: ensure Mondoo Client is installed
+- name: Ensure cnquery and cnspec are installed
   apt:
     name: mondoo
     state: latest

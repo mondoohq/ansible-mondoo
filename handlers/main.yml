@@ -1,9 +1,9 @@
 ---
-# handlers file for mondoo
+# handlers file for cnspec service
 
-- name: restart mondoo-service
+- name: restart cnspec-service
   ansible.builtin.systemd:
-    name: mondoo
+    name: cnspec
     state: restarted
     daemon_reload: yes
   when: not ansible_check_mode

@@ -6,9 +6,8 @@ latest_version_url: https://releases.mondoo.com/mondoo/latest.json
 # option to force a re-registration
 force_registration: false
 
-# we support 'manual' and 'cli'
+# we support 'manual'
 # if 'manual' is set, the user need to set `registration_token`
-# if 'cli' is set, the user need to have a local Mondoo Client installed
 registration_token_retrieval: "manual"
 
 # gpg key id

@@ -1,6 +1,6 @@
 ---
 
-# install Mondoo Client
+# install mondoo package which installs cnquery and cnspec
 - include_tasks: pkg_debian.yml
   when: ansible_os_family == "Debian"
 
@@ -10,31 +10,15 @@
 - include_tasks: pkg_suse.yml
   when: ansible_os_family == "Suse"
 
-- name: create mondoo config directory
+- name: Create mondoo config directory
   file:
     dest: /etc/opt/mondoo
     state: directory
   become: true
   when: not ansible_check_mode
 
-- name: retrieves a new registration token
-  command: mondoo client generate-token --expiresin 120
-  connection: local
-  register: retrievedRegistrationToken
-  when: registration_token_retrieval == "cli"
-
-- name: set registration token fact
-  set_fact: registration_token={{ retrievedRegistrationToken.stdout }}
-  when: registration_token_retrieval == "cli"
-
-- name: log registration token
-  ansible.builtin.debug:
-    var: registration_token
-    verbosity: 1
-
-- name: unregister mondoo client
-  # unregisters an existing Mondoo Client if it was registered
-  command: mondoo unregister --force --config /etc/opt/mondoo/mondoo.yml
+- name: Logout cnquery and cnspec from Mondoo platform
+  command: cnspec logout --force --config /etc/opt/mondoo/mondoo.yml
   args:
     # only run the command if no config file exists
     creates: /etc/opt/mondoo/mondoo.yml
@@ -42,38 +26,47 @@
   # if the credentials are already invalid, the command will throw an error
   ignore_errors: yes
 
-- name: remove existing credentials
+- name: Remove existing credentials
   # ensure no configuration file exists if force mode was activated
   file:
     state: absent
     path: /etc/opt/mondoo/mondoo.yml
   when: force_registration == true
 
-- name: register Mondoo Client
-  command: mondoo register --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
+- name: Login cnquery and cnspec with Mondoo platform
+  command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
   args:
     # only run the command if no config file exists (was not deleted in non-force mode)
     creates: /etc/opt/mondoo/mondoo.yml
   become: true
   when: not ansible_check_mode
-  notify: restart mondoo-service
+  notify: restart cnspec-service
 
-- name: Create Mondoo systemd service file
+- name: Create cnspec systemd service file
   template:
-    src: templates/mondoo.service.j2
-    dest: /etc/systemd/system/mondoo.service
+    src: templates/cnspec.service.j2
+    dest: /etc/systemd/system/cnspec.service
   become: true
 
-- name: ensure mondoo service is enabled and running
+- name: Ensure cnspec service is enabled and running
   ansible.builtin.systemd:
-    name: mondoo.service
+    name: cnspec.service
     state: started
     daemon_reload: yes
     enabled: yes
   become: true
   when: not ansible_check_mode
 
-- name: ensure Mondoo Client is managed
-  command: mondoo register
+- name: Ensure deprecated mondoo service is removed
+  ansible.builtin.systemd:
+    name: mondoo.service
+    state: stopped
+    daemon_reload: yes
+    enabled: false
+  become: true
+  when: not ansible_check_mode
+
+- name: Ensure cnquery and cnspec are managed
+  command: cnspec login
   become: true
   when: (ensure_managed_client is not undefined and ensure_managed_client == true) and not ansible_check_mode
