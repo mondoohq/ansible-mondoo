@@ -70,7 +70,7 @@ In addition we support the following variables:
 - hosts: mondoo_linux
   become: yes
   roles:
-    - role: mondoohq.mondoo-client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: true
@@ -89,7 +89,7 @@ If you want to use mondoo behind a proxy
       https_proxy: "http://192.168.56.1:3128"
 
   roles:
-    - role: mondoohq.mondoo-client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: true
@@ -101,7 +101,7 @@ If you want to use mondoo behind a proxy
 
 ```bash
 # download mondoo role
-ansible-galaxy install mondoo.mondoo-client
+ansible-galaxy install mondoo.client
 # apply the playbook
 ansible-playbook -i hosts playbook.yml
 ```
