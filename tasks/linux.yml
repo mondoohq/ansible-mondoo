@@ -43,7 +43,7 @@
     creates: /etc/opt/mondoo/mondoo.yml
   become: true
   when: not ansible_check_mode
-  notify: restart cnspec-service
+  notify: Restart cnspec-service
 
 - name: Create cnspec systemd service file
   ansible.builtin.template:
