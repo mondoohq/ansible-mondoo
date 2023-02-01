@@ -1,0 +1,65 @@
+---
+
+- name: Create mondoo config directory
+  ansible.builtin.file:
+    dest: /etc/opt/mondoo
+    state: directory
+    mode: '0644'
+  become: true
+  when: not ansible_check_mode
+
+- name: Logout cnquery and cnspec from Mondoo platform
+  ansible.builtin.command: cnspec logout --force --config /etc/opt/mondoo/mondoo.yml
+  args:
+    # only run the command if no config file exists
+    creates: /etc/opt/mondoo/mondoo.yml
+  when: force_registration
+  # if the credentials are already invalid, the command will throw an error
+  ignore_errors: true
+
+- name: Remove existing credentials
+  # ensure no configuration file exists if force mode was activated
+  ansible.builtin.file:
+    state: absent
+    path: /etc/opt/mondoo/mondoo.yml
+    mode: '0644'
+  when: force_registration
+
+- name: Login cnquery and cnspec with Mondoo platform
+  ansible.builtin.command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
+  args:
+    # only run the command if no config file exists (was not deleted in non-force mode)
+    creates: /etc/opt/mondoo/mondoo.yml
+  become: true
+  when: not ansible_check_mode
+  notify: restart cnspec-service
+
+- name: Create cnspec systemd service file
+  ansible.builtin.template:
+    src: templates/cnspec.service.j2
+    dest: /etc/systemd/system/cnspec.service
+    mode: '0644'
+  become: true
+
+- name: Ensure cnspec service is enabled and running
+  ansible.builtin.systemd:
+    name: cnspec.service
+    state: started
+    daemon_reload: yes
+    enabled: yes
+  become: true
+  when: not ansible_check_mode
+
+- name: Ensure deprecated mondoo service is removed
+  ansible.builtin.systemd:
+    name: mondoo.service
+    state: stopped
+    daemon_reload: yes
+    enabled: false
+  become: true
+  when: not ansible_check_mode
+
+- name: Ensure cnquery and cnspec are managed
+  ansible.builtin.command: cnspec login
+  become: true
+  when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode
