@@ -8,7 +8,7 @@
     enabled: yes
     gpgcheck: true
     gpgkey: "{{ mondoo_rpm_gpgkey }}"
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Ensure Mondoo package is installed
@@ -16,5 +16,5 @@
     name: mondoo
     update_cache: yes
     state: latest
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode

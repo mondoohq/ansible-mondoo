@@ -1,6 +1,7 @@
 ---
 # defaults file for mondoo
 
+use_become: true
 latest_version_url: https://releases.mondoo.com/mondoo/latest.json
 
 # option to force a re-registration

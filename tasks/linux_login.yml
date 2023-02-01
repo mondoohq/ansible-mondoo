@@ -5,7 +5,7 @@
     dest: /etc/opt/mondoo
     state: directory
     mode: '0644'
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Logout cnquery and cnspec from Mondoo platform
@@ -30,7 +30,7 @@
   args:
     # only run the command if no config file exists (was not deleted in non-force mode)
     creates: /etc/opt/mondoo/mondoo.yml
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
   notify: restart cnspec-service
 
@@ -39,7 +39,7 @@
     src: templates/cnspec.service.j2
     dest: /etc/systemd/system/cnspec.service
     mode: '0644'
-  become: true
+  become: "{{ use_become }}"
 
 - name: Ensure cnspec service is enabled and running
   ansible.builtin.systemd:
@@ -47,7 +47,7 @@
     state: started
     daemon_reload: yes
     enabled: yes
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Ensure deprecated mondoo service is removed
@@ -56,10 +56,10 @@
     state: stopped
     daemon_reload: yes
     enabled: false
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are managed
   ansible.builtin.command: cnspec login
-  become: true
+  become: "{{ use_become }}"
   when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode

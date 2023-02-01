@@ -19,7 +19,7 @@
 
 - name: Pack Mondoo gpg key
   ansible.builtin.command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
-  become: true
+  become: "{{ use_become }}"
 
 - name: Configure Mondoo deb repository
   ansible.builtin.apt_repository:
@@ -27,7 +27,7 @@
     filename: "mondoo"
     state: "present"
     update_cache: yes
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are installed
@@ -35,5 +35,5 @@
     name: mondoo
     state: latest
     update_cache: yes
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
