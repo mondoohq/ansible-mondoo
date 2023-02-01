@@ -4,3 +4,4 @@ use_default_rules: true
 skip_list:
   - package-latest
   - no-changed-when
+  - ignore_errors

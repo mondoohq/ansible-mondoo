@@ -5,6 +5,7 @@
   ansible.builtin.get_url:
     url: "{{ mondoo_zypper_gpgkey }}"
     dest: /tmp/MONDOO_RPM_KEY.pub
+    mode: '0644'
 
 - name: "Install Mondoo gpg key"
   ansible.builtin.rpm_key:
