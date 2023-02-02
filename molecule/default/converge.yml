@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   roles:
-    - role: ..
-  vars:
-    registration_token: "setregistrationtokenhere"
+    - role: mondoo.client
+      vars:
+        registration_token: ""  # not set by default to test package installation in CI/CD
+        use_become: false

@@ -1,19 +1,20 @@
 ---
 dependency:
   name: galaxy
-driver:
-  name: vagrant
-  provider:
-    name: virtualbox
 lint: |
   yamllint
   ansible-lint
   flake8
+driver:
+  name: docker
 platforms:
-  - name: ubuntu
-    box: ubuntu/bionic64
-  - name: centos
-    box: centos/7
+  - name: instance
+    image: ${image:-""}
+    command: ${container_command:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    pre_build_image: true
 provisioner:
   name: ansible
 verifier:

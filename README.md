@@ -153,24 +153,26 @@ For testing, this role uses molecule. You can install the dependencies via:
 
 ```bash
 pip install molecule
-pip install python-vagrant
-pip install molecule-vagrant
+pip install docker
+pip install 'molecule[docker]'
 ```
 
 The `molecule` cli covers the test lifecycle:
 
 ```bash
-# spin up the vms
-molecule create
+# reset molecule
+molecule reset
 # converge the machines with ansible
-molecule converge
+image=rockylinux:8 container_command=/sbin/init molecule converge
 # run molecule tests
-molecule verify
+image=rockylinux:8 container_command=/sbin/init molecule verify
 # for degugging, you can login to individual hosts
 molecule login --host ubuntu
 # destroy the test setup
 molecule destroy
 ```
+
+NOTE: to be able to test on m1 macOS, you need arm compatible docker images like rockylinux shown above
 
 For linting, we use `ansible-lint`:
 

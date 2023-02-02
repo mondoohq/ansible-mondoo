@@ -1,0 +1,23 @@
+---
+name: CI
+
+on:
+  - push
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        image:
+          - geerlingguy/docker-rockylinux8-ansible
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          path: "${{ github.repository }}"
+      - name: molecule
+        uses: robertdebock/molecule-action@5.0.1
+        with:
+          options: parallel
+          scenario: default
