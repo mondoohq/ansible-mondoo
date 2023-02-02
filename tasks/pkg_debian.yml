@@ -19,6 +19,8 @@
 
 - name: Pack Mondoo gpg key
   ansible.builtin.command: gpg --dearmor --batch --yes --output {{ mondoo_deb_gpgkey_dest }} /etc/apt/trusted.gpg.d/mondoo.asc
+  changed_when: false
+  no_log: true
   become: "{{ use_become }}"
 
 - name: Configure Mondoo deb repository
