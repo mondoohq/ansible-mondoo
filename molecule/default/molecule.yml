@@ -6,7 +6,7 @@ driver:
 platforms:
   - name: instance
     image: ${image}:${tag:-latest}
-    command: ${container_command:-"/lib/systemd/systemd"}
+    command: ${container_command:-""}
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw  # this needs rw to get access to /tmp
     privileged: true

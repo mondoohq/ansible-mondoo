@@ -163,13 +163,18 @@ The `molecule` cli covers the test lifecycle:
 # reset molecule
 molecule reset
 # converge the machines with ansible
-image=rockylinux:8 molecule converge
-# run molecule tests
-image=rockylinux:8 molecule verify
+image=geerlingguy/docker-ubuntu2204-ansible molecule converge
+# run molecule tests with cnspec
+image=geerlingguy/docker-ubuntu2204-ansible molecule verify
 # for degugging, you can login to individual hosts
 molecule login --host ubuntu
 # destroy the test setup
 molecule destroy
+```
+
+```
+image=geerlingguy/docker-ubuntu2204-ansible molecule test
+image=rsprta/opensuse-ansible molecule test
 ```
 
 NOTE: to be able to test on m1 macOS, you need arm compatible docker images like rockylinux shown above
