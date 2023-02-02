@@ -1,0 +1,37 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    cnspec_bin: /usr/bin/cnspec
+    cnspec_test_directory: "/tmp/molecule/cnspec"
+  tasks:
+    # we do not need to install cnspec because the installation happened already with converge
+    - name: Create Molecule directory for test files
+      ansible.builtin.file:
+        path: "{{ cnspec_test_directory }}"
+        state: directory
+        mode: 0644
+    - name: Copy cnspec policies to remote
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ cnspec_test_directory }}/{{ item | basename }}"
+        mode: 0644
+      with_fileglob:
+        - "{{ playbook_dir }}/tests/*mql.yaml"
+    - name: Register test files
+      ansible.builtin.shell: "ls {{ cnspec_test_directory }}/*.mql.yaml"
+      register: test_files
+    - name: Execute cnspec policy
+      ansible.builtin.command: "{{ cnspec_bin }} scan local -f {{ item }}"
+      register: test_results
+      loop: "{{ test_files.stdout_lines }}"
+      ignore_errors: true
+    - name: Display details about the cnspec results
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ test_results.results }}"
+    - name: Fail when tests fail
+      ansible.builtin.fail:
+        msg: "cnspec failed to validate"
+      when: item.rc != 0
+      loop: "{{ test_results.results }}"

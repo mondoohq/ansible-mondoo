@@ -163,9 +163,9 @@ The `molecule` cli covers the test lifecycle:
 # reset molecule
 molecule reset
 # converge the machines with ansible
-image=rockylinux:8 container_command=/sbin/init molecule converge
+image=rockylinux:8 molecule converge
 # run molecule tests
-image=rockylinux:8 container_command=/sbin/init molecule verify
+image=rockylinux:8 molecule verify
 # for degugging, you can login to individual hosts
 molecule login --host ubuntu
 # destroy the test setup

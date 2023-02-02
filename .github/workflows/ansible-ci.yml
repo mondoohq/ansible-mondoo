@@ -9,8 +9,9 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        image:
-          - geerlingguy/docker-rockylinux8-ansible
+        config:
+        - image: "geerlingguy/docker-ubuntu2204-ansible"
+          tag: "latest"
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -21,3 +22,5 @@ jobs:
         with:
           options: parallel
           scenario: default
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}

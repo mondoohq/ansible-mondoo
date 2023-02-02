@@ -1,0 +1,20 @@
+# Read more about the policy structure at https://mondoo.com/docs/platform/policies/overview
+policies:
+  - uid: mondoo-installer
+    name: Mondoo Installer Verification
+    version: "1.0.0"
+    authors:
+      - name: Mondoo, Inc
+        email: hello@mondoo.com
+    specs:
+      - asset_filter:
+          query: platform.family.contains(_ == 'linux')
+        scoring_queries:
+          package-installed:
+queries:
+  - uid: package-installed
+    title: Ensure mondoo, cnquery and cnspec package are installed
+    query: |
+      package("mondoo").installed
+      package("cnspec").installed
+      package("cnquery").installed
