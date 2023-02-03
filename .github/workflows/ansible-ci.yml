@@ -1,0 +1,30 @@
+---
+name: CI
+
+on:
+  - push
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        config:
+        - image: geerlingguy/docker-ubuntu2204-ansible
+          tag: latest
+        - image: geerlingguy/docker-rockylinux9-ansible
+          tag: latest
+        - image: rsprta/opensuse-ansible 
+          tag: latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          path: "${{ github.repository }}"
+      - name: molecule
+        uses: robertdebock/molecule-action@5.0.1
+        with:
+          options: parallel
+          scenario: default
+          image: ${{ matrix.config.image }}
+          tag: ${{ matrix.config.tag }}

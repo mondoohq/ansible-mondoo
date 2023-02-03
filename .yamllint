@@ -1,6 +1,9 @@
 ---
 extends: default
 
+ignore: |
+  *.mql.yaml
+
 rules:
   braces:
     max-spaces-inside: 1

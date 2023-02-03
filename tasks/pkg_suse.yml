@@ -11,7 +11,7 @@
   ansible.builtin.rpm_key:
     state: present
     key: /tmp/MONDOO_RPM_KEY.pub
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Install Mondoo zypper repository
@@ -22,12 +22,12 @@
     enabled: yes
     disable_gpg_check: no
     auto_import_keys: true
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are installed
   community.general.zypper:
     name: mondoo
     state: latest
-  become: true
+  become: "{{ use_become }}"
   when: not ansible_check_mode
