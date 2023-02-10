@@ -10,12 +10,12 @@ It does:
 
 It supports:
 
-- RedHat & CentOS
-- Ubuntu
 - Amazon Linux
 - Debian
-- Suse & openSUSE
-- Windows 10, 2016, 2019, 2022
+- Red Hat Enterprise Linux and derivatives (CentOS/AlmaLinux/Rocky Linux)
+- SUSE & openSUSE
+- Ubuntu
+- Windows 10, 11, 2016, 2019, 2022
 
 The role is published at Ansible Galaxy: [Mondoo/Client role](https://galaxy.ansible.com/mondoo/client).
 
@@ -166,7 +166,7 @@ molecule reset
 image=geerlingguy/docker-ubuntu2204-ansible molecule converge
 # run molecule tests with cnspec
 image=geerlingguy/docker-ubuntu2204-ansible molecule verify
-# for degugging, you can login to individual hosts
+# for debugging, you can login to individual hosts
 molecule login --host ubuntu
 # destroy the test setup
 molecule destroy
