@@ -57,7 +57,7 @@
     daemon_reload: yes
     enabled: false
   become: "{{ use_become }}"
-  when: not ansible_check_mode
+  when: ansible_facts.services["mondoo.service"] is defined and not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are managed
   ansible.builtin.command: cnspec login
