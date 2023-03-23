@@ -1,2 +1,4 @@
 ---
 # vars file for mondoo
+# api_proxy can be set to route Mondoo API traffic through the specified proxy
+api_proxy: ""

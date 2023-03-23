@@ -25,6 +25,14 @@
     mode: '0644'
   when: force_registration
 
+- name: Put proxy info if defined
+  ansible.builtin.lineinfile:
+    path: /etc/opt/mondoo/mondoo.yml
+    line: "api_proxy: {{ api_proxy }}"
+    create: yes
+  become: "{{ use_become }}"
+  when: api_proxy != ""
+
 - name: Login cnquery and cnspec with Mondoo platform
   ansible.builtin.command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
   args:

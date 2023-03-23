@@ -64,6 +64,7 @@ In addition we support the following variables:
 | ----------------------------- | ------------------------------------------------------------------------- |
 | `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`            |
 | `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
+| `api_proxy` | Allows setting a Mondoo API proxy setting used only for Mondoo API traffic |
 
 ```yaml
 ---
@@ -96,6 +97,20 @@ If you want to use mondoo behind a proxy
         ensure_managed_client: true
       environment: "{{proxy_env}}"
 ```
+If you want to route only Mondoo API traffic through a specific proxy
+
+```yaml
+---
+- hosts: linux_hosts
+  become: yes
+
+  tasks:
+  - include_role:
+      name: mondoo.client
+    vars:
+      api_proxy: "http://192.168.56.1:3128"
+```
+
 
 1. Run the playbook with the local hosts file
 
