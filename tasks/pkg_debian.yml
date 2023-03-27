@@ -1,13 +1,5 @@
 ---
 
-- name: Install apt-transport-https
-  ansible.builtin.apt:
-    name: apt-transport-https
-    state: present
-    update_cache: yes
-  become: true
-  when: not ansible_check_mode
-
 - name: Add Mondoo apt repository key.
   ansible.builtin.get_url:
     url: "{{ mondoo_deb_gpgkey }}"
@@ -22,6 +14,14 @@
   changed_when: false
   no_log: true
   become: "{{ use_become }}"
+
+- name: Install apt-transport-https
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+  become: true
+  when: not ansible_check_mode
 
 - name: Configure Mondoo deb repository
   ansible.builtin.apt_repository:
