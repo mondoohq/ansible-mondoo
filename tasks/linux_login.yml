@@ -30,6 +30,7 @@
     path: /etc/opt/mondoo/mondoo.yml
     line: "api_proxy: {{ api_proxy }}"
     create: yes
+    mode: '0644'
   become: "{{ use_become }}"
   when: api_proxy != ""
 

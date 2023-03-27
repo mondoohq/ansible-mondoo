@@ -51,10 +51,9 @@
 
 - name: Put proxy info if defined
   ansible.builtin.lineinfile:
-    path: /etc/opt/mondoo/mondoo.yml
+    path: C:\ProgramData\Mondoo\mondoo.yml
     line: "api_proxy: {{ api_proxy }}"
     create: yes
-  become: "{{ use_become }}"
   when: api_proxy != ""
 
 - name: Login cnquery and cnspec
