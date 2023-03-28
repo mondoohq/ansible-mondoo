@@ -47,11 +47,11 @@
     path: C:\ProgramData\Mondoo\mondoo.yml
   when: force_registration
 
-- name: store cnspec login command as string
+- name: Store cnspec login command as string
   ansible.builtin.set_fact:
     login_cmd: "cnspec.exe login --config C:\\ProgramData\\Mondoo\\mondoo.yml --token {{ registration_token }}"
 
-- name: add api-proxy to cnspec login command
+- name: Add api-proxy to cnspec login command
   ansible.builtin.set_fact:
     login_cmd: "{{ login_cmd + ' --api-proxy ' + api_proxy }}"
   when: api_proxy != ""
@@ -65,7 +65,7 @@
     creates: C:\ProgramData\Mondoo\mondoo.yml
   when: not ansible_check_mode
 
-- name: Put proxy info if defined
+- name: Create/update/remove proxy info
   ansible.builtin.lineinfile:
     path: C:\ProgramData\Mondoo\mondoo.yml
     line: "api_proxy: {{ api_proxy }}"

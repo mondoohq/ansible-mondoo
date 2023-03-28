@@ -21,11 +21,11 @@
     mode: '0644'
   when: force_registration
 
-- name: store cnspec login command as string
+- name: Store cnspec login command as string
   ansible.builtin.set_fact:
     login_cmd: "cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}"
 
-- name: add api-proxy to cnspec login command
+- name: Add api-proxy to cnspec login command
   ansible.builtin.set_fact:
     login_cmd: "{{ login_cmd + ' --api-proxy ' + api_proxy }}"
   when: api_proxy != ""
@@ -39,7 +39,7 @@
   when: not ansible_check_mode
   notify: Restart cnspec-service
 
-- name: Put proxy info if defined
+- name: Create/update/remove proxy info
   ansible.builtin.lineinfile:
     path: /etc/opt/mondoo/mondoo.yml
     line: "api_proxy: {{ api_proxy }}"
