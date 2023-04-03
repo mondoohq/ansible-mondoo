@@ -61,9 +61,10 @@ This playbook demonstrates how to use the Mondoo Package role to install `cnquer
 In addition we support the following variables:
 
 | variable                      | description                                                               |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`            |
+|-------------------------------|---------------------------------------------------------------------------|
+| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`             |
 | `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
+| `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                     |
 
 ```yaml
 ---
@@ -77,7 +78,7 @@ In addition we support the following variables:
         ensure_managed_client: true
 ```
 
-If you want to use mondoo behind a proxy
+If you want to use cnspec behind a proxy
 
 ```yaml
 ---

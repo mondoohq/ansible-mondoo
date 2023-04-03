@@ -49,8 +49,17 @@
     path: C:\ProgramData\Mondoo\mondoo.yml
   when: force_registration
 
+- name: Store cnspec login command as string
+  ansible.builtin.set_fact:
+    login_cmd: "cnspec.exe login --config C:\\ProgramData\\Mondoo\\mondoo.yml --token {{ registration_token }}"
+
+- name: Add api-proxy to cnspec login command
+  ansible.builtin.set_fact:
+    login_cmd: "{{ login_cmd + ' --api-proxy ' + proxy_env['https_proxy'] }}"
+  when: proxy_env['https_proxy'] is defined
+
 - name: Login cnquery and cnspec
-  ansible.windows.win_command: cnspec.exe login --config C:\\ProgramData\\Mondoo\\mondoo.yml --token {{ registration_token }}
+  ansible.windows.win_command: "{{ login_cmd }}"
   args:
     chdir: "C:\\Program Files\\Mondoo"
     # only run the command if no config file exists (was not deleted in non-force mode)

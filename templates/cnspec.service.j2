@@ -3,12 +3,6 @@ Description=cnspec Service
 After=network-online.target
 
 [Service]
-{% if proxy_env['https_proxy'] is defined %}
-Environment='https_proxy={{ proxy_env['https_proxy'] }}'
-{% endif %}
-{% if https_proxy is defined %}
-Environment='https_proxy={{ https_proxy }}'
-{% endif %}
 Type=simple
 WorkingDirectory=/etc/opt/mondoo/
 ExecStart=/usr/bin/cnspec --config /etc/opt/mondoo/mondoo.yml serve

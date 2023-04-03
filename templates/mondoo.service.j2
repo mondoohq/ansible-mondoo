@@ -3,12 +3,6 @@ Description=Mondoo Client Service
 After=network-online.target
 
 [Service]
-{% if proxy_env['https_proxy'] is defined %}
-Environment='https_proxy={{ proxy_env['https_proxy'] }}'
-{% endif %}
-{% if https_proxy is defined %}
-Environment='https_proxy={{ https_proxy }}'
-{% endif %}
 Type=simple
 WorkingDirectory=/opt/mondoo/bin/
 ExecStart=/opt/mondoo/bin/mondoo --config /etc/opt/mondoo/mondoo.yml serve

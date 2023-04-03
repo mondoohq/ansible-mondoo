@@ -25,8 +25,18 @@
     mode: '0644'
   when: force_registration
 
+- name: Store cnspec login command as string
+  ansible.builtin.set_fact:
+    login_cmd: "cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}"
+
+- name: Add api-proxy to cnspec login command
+  ansible.builtin.set_fact:
+    login_cmd: "{{ login_cmd + ' --api-proxy ' + proxy_env['https_proxy'] }}"
+  when: proxy_env['https_proxy'] is defined
+
 - name: Login cnquery and cnspec with Mondoo platform
-  ansible.builtin.command: cnspec login --config /etc/opt/mondoo/mondoo.yml --token {{ registration_token }}
+  ansible.builtin.command:
+    cmd: "{{ login_cmd }}"
   args:
     # only run the command if no config file exists (was not deleted in non-force mode)
     creates: /etc/opt/mondoo/mondoo.yml
