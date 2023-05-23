@@ -22,7 +22,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: molecule
-        uses: robertdebock/molecule-action@5.0.2
+        uses: robertdebock/molecule-action@5.0.3
         with:
           options: parallel
           scenario: default
