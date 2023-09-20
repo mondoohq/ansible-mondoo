@@ -10,12 +10,12 @@ jobs:
     strategy:
       matrix:
         config:
-        - image: geerlingguy/docker-ubuntu2204-ansible
-          tag: latest
-        - image: geerlingguy/docker-rockylinux9-ansible
-          tag: latest
-        - image: rsprta/opensuse-ansible 
-          tag: latest
+          - image: geerlingguy/docker-ubuntu2204-ansible
+            tag: latest
+          - image: geerlingguy/docker-rockylinux9-ansible
+            tag: latest
+          - image: rsprta/opensuse-ansible
+            tag: latest
     steps:
       - name: checkout
         uses: actions/checkout@v3

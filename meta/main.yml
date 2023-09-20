@@ -1,3 +1,6 @@
+# Copyright (c) Mondoo, Inc.
+# SPDX-License-Identifier: BUSL-1.1
+
 ---
 collections:
   - ansible.windows
@@ -14,7 +17,7 @@ galaxy_info:
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker
 
-  license: Apache-2.0
+  license: BUSL-1.1
 
   min_ansible_version: '1.2'
 
