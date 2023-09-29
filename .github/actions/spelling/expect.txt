@@ -1,6 +1,5 @@
 Ansiball
-ansiballz
-geerlingguy
-jmespath
+linux
+opensuse
 rsprta
 urllib
