@@ -11,7 +11,7 @@ policies:
         email: hello@mondoo.com
     specs:
       - asset_filter:
-          query: platform.family.contains(_ == 'linux')
+          query: asset.family.contains(_ == 'linux')
         scoring_queries:
           package-installed:
 queries:
