@@ -1,5 +1,9 @@
 # Mondoo Package Ansible Role
 
+![mondoo ansible role illustration](.github/social/preview.jpg)
+
+## Overview
+
 This role installs `cnquery` and `cnspec` on Linux and Windows servers.
 
 It does:
