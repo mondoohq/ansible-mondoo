@@ -14,6 +14,9 @@ force_registration: false
 # if 'manual' is set, the user need to set `registration_token`
 registration_token_retrieval: "manual"
 
+# annotation/ tags for the node
+annotations: ""
+
 # gpg key id
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 

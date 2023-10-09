@@ -65,6 +65,7 @@ In addition we support the following variables:
 | `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`             |
 | `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
 | `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                     |
+| `annotations`                 | set annotations/ tags for the node                                        |
 
 ```yaml
 ---
@@ -76,6 +77,7 @@ In addition we support the following variables:
         registration_token: "changeme"
         force_registration: true
         ensure_managed_client: true
+        annotations: "owner=hello@mondoo.com,env=production"
 ```
 
 If you want to use cnspec behind a proxy

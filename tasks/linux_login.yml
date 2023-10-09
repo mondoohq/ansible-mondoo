@@ -37,6 +37,11 @@
     login_cmd: "{{ login_cmd + ' --api-proxy ' + proxy_env['https_proxy'] }}"
   when: proxy_env['https_proxy'] is defined
 
+- name: Add annotations to cnspec login command
+  ansible.builtin.set_fact:
+    login_cmd: "{{ login_cmd + ' --annotation ' + annotations }}"
+  when: annotations | length > 0
+
 - name: Login cnquery and cnspec with Mondoo platform
   ansible.builtin.command:
     cmd: "{{ login_cmd }}"
