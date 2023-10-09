@@ -148,8 +148,12 @@ If you are targeting windows, the configuration is slightly different since `bec
 3. Run the playbook with the local hosts file
 
 ```bash
-# download mondoo role
+# download mondoo role from github
+ansible-galaxy role install git+https://github.com/mondoohq/ansible-mondoo.git
+
+# (alternative) download mondoo role from ansible galaxy
 ansible-galaxy install mondoohq.client
+
 # apply the playbook
 ansible-playbook -i hosts playbook.yml
 ```
