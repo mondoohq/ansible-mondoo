@@ -228,6 +228,16 @@ Make sure jmespath is installed in the same python environment as ansible:
 pip install jmespath
 ```
 
+**I want to test it with an unsupported OS**
+
+Add the following to main.yml and print the ansible_facts to see what is used and adjust the `when` conditions:
+
+```yaml
+- name: Print all available facts
+  ansible.builtin.debug:
+    var: ansible_facts
+```
+
 ## Join the community!
 
 Join the [Mondoo Community GitHub Discussions](https://github.com/orgs/mondoohq/discussions) to collaborate on policy as code and security automation.

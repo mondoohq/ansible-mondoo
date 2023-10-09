@@ -1,0 +1,20 @@
+# Copyright (c) Mondoo, Inc.
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+
+- name: Install Mondoo rpm repository
+  ansible.builtin.yum_repository:
+    name: mondoo
+    description: Mondoo Repository
+    baseurl: "{{ mondoo_rpm_repo }}"
+    enabled: yes
+    gpgcheck: true
+    gpgkey: "{{ mondoo_rpm_gpgkey }}"
+  become: "{{ use_become }}"
+  when: not ansible_check_mode
+
+- name: Ensure Mondoo package is installed
+  ansible.builtin.command: tdnf install -y mondoo
+  become: "{{ use_become }}"
+  when: not ansible_check_mode
