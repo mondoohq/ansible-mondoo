@@ -57,7 +57,7 @@ This playbook demonstrates how to use the Mondoo Package role to install `cnquer
 - hosts: linux_hosts
   become: yes
   roles:
-    - role: mondoohq.client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
 ```
@@ -76,7 +76,7 @@ In addition we support the following variables:
 - hosts: linux_hosts
   become: yes
   roles:
-    - role: mondoohq.client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: true
@@ -96,7 +96,7 @@ If you want to use cnspec behind a proxy
       https_proxy: "http://192.168.56.1:3128"
 
   roles:
-    - role: mondoohq.client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: true
@@ -108,7 +108,7 @@ If you want to use cnspec behind a proxy
 
 ```bash
 # download mondoo role
-ansible-galaxy install mondoohq.client
+ansible-galaxy install mondoo.client
 # apply the playbook
 ansible-playbook -i hosts playbook.yml
 ```
@@ -139,7 +139,7 @@ If you are targeting windows, the configuration is slightly different since `bec
 ```yaml
 - hosts: windows_hosts
   roles:
-    - role: mondoohq.client
+    - role: mondoo.client
       vars:
         registration_token: "changeme"
         force_registration: false
@@ -152,7 +152,7 @@ If you are targeting windows, the configuration is slightly different since `bec
 ansible-galaxy role install git+https://github.com/mondoohq/ansible-mondoo.git
 
 # (alternative) download mondoo role from ansible galaxy
-ansible-galaxy install mondoohq.client
+ansible-galaxy install mondoo.client
 
 # apply the playbook
 ansible-playbook -i hosts playbook.yml

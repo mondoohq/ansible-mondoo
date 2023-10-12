@@ -7,7 +7,7 @@ collections:
 
 galaxy_info:
   role_name: client
-  namespace: mondoohq
+  namespace: mondoo
   github_branch: main
   author: Mondoo, Inc
   description: Install and configure cnquery and cnspec
