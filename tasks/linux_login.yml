@@ -3,6 +3,11 @@
 
 ---
 
+- name: Ensure we have the latest os provider installed
+  ansible.builtin.command: cnspec providers install os
+  become: "{{ use_become }}"
+  when: not ansible_check_mode
+
 - name: Create mondoo config directory
   ansible.builtin.file:
     dest: /etc/opt/mondoo
