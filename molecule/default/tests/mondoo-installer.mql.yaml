@@ -9,15 +9,13 @@ policies:
     authors:
       - name: Mondoo, Inc
         email: hello@mondoo.com
-    specs:
-      - asset_filter:
-          query: asset.family.contains(_ == 'linux')
-        scoring_queries:
-          package-installed:
+    groups:
+      - checks:
+          - uid: package-installed
 queries:
   - uid: package-installed
-    title: Ensure mondoo, cnquery and cnspec package are installed
+    filters: asset.family.contains(_ == 'linux')
+    title: Ensure cnquery and cnspec package are installed
     query: |
-      package("mondoo").installed
       package("cnspec").installed
       package("cnquery").installed

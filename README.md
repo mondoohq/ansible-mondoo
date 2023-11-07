@@ -169,7 +169,7 @@ For testing, this role uses molecule. You can install the dependencies via:
 ```bash
 pip install molecule
 pip install docker
-pip install 'molecule[docker]'
+pip install 'molecule-plugins[docker]'
 ```
 
 The `molecule` cli covers the test lifecycle:
