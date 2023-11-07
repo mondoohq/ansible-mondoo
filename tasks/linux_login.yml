@@ -3,10 +3,14 @@
 
 ---
 
+- name: Get current cnspec version
+  ansible.builtin.command: cnspec version
+  register: cnspec_version
+
 - name: Ensure we have the latest os provider installed
   ansible.builtin.command: cnspec providers install os
   become: "{{ use_become }}"
-  when: not ansible_check_mode
+  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 9.*")
 
 - name: Create mondoo config directory
   ansible.builtin.file:
