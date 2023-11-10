@@ -3,6 +3,14 @@
 
 ---
 
+- name: Install gpg
+  ansible.builtin.apt:
+    name: gpg
+    state: present
+    update_cache: yes
+  become: true
+  when: not ansible_check_mode
+
 - name: Add Mondoo apt repository key.
   ansible.builtin.get_url:
     url: "{{ mondoo_deb_gpgkey }}"
@@ -42,3 +50,24 @@
     update_cache: yes
   become: "{{ use_become }}"
   when: not ansible_check_mode
+
+- name: Ensure cron is installed
+  ansible.builtin.apt:
+    name: cron
+    state: latest
+    update_cache: yes
+  become: "{{ use_become }}"
+  when: not ansible_check_mode and update_linux_enabled
+
+- name: Ensuring unmasked cron.service
+  ansible.builtin.systemd:
+    name: cron.service
+    masked: no
+  when: update_linux_enabled
+
+- name: Configuring cron.service
+  ansible.builtin.service:
+    name: cron.service
+    state: started
+    enabled: yes
+  when: update_linux_enabled

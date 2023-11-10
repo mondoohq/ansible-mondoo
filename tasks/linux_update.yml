@@ -1,0 +1,37 @@
+# Copyright (c) Mondoo, Inc.
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+
+- name: Create cron update task for cnspec update (Debian based)
+  ansible.builtin.cron:
+    name: "mondoo-update"
+    day: "{{ update_linux_interval }}"
+    hour: "{{ update_linux_time_hour }}"
+    minute: "{{ update_linux_time_minute }}"
+    user: root
+    job: "apt update && apt --only-upgrade install -y mondoo > /var/log/mondoo_update"
+    cron_file: mondoo_update
+  when: ansible_os_family == "Debian"
+
+- name: Create cron update task for cnspec update (RedHat based)
+  ansible.builtin.cron:
+    name: "mondoo-update"
+    day: "{{ update_linux_interval }}"
+    hour: "{{ update_linux_time_hour }}"
+    minute: "{{ update_linux_time_minute }}"
+    user: root
+    job: "yum update -y mondoo > /var/log/mondoo_update"
+    cron_file: mondoo_update
+  when: ansible_os_family == "RedHat"
+
+- name: Create cron update task for cnspec update (RedHat based)
+  ansible.builtin.cron:
+    name: "mondoo-update"
+    day: "{{ update_linux_interval }}"
+    hour: "{{ update_linux_time_hour }}"
+    minute: "{{ update_linux_time_minute }}"
+    user: root
+    job: "zypper -n update mondoo > /var/log/mondoo_update"
+    cron_file: mondoo_update
+  when: ansible_os_family == "Suse"

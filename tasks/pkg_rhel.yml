@@ -21,3 +21,24 @@
     state: latest
   become: "{{ use_become }}"
   when: not ansible_check_mode
+
+- name: Ensure cron is installed
+  ansible.builtin.yum:
+    name: cronie
+    update_cache: yes
+    state: latest
+  become: "{{ use_become }}"
+  when: not ansible_check_mode and update_linux_enabled
+
+- name: Ensuring unmasked crond.service
+  ansible.builtin.systemd:
+    name: crond.service
+    masked: no
+  when: update_linux_enabled
+
+- name: Configuring crond.service
+  ansible.builtin.service:
+    name: crond.service
+    state: started
+    enabled: yes
+  when: update_linux_enabled

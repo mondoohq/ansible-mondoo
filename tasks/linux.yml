@@ -23,3 +23,7 @@
 - name: Login to Mondoo Platform
   ansible.builtin.include_tasks: linux_login.yml
   when: registration_token != ""
+
+- name: Create update Task
+  ansible.builtin.include_tasks: linux_update.yml
+  when: update_linux_enabled

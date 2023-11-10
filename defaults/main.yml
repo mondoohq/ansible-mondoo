@@ -17,6 +17,17 @@ registration_token_retrieval: "manual"
 # annotation/ tags for the node
 annotations: ""
 
+# Update Task for cnspec (Linux)
+update_linux_enabled: false
+update_linux_interval: "*/3"
+update_linux_time_hour: "12"
+update_linux_time_minute: "00"
+
+# Update Task for cnspec (Windows)
+update_windows_enabled: false
+update_windows_interval: "3"
+update_windows_time: "12:00:00"
+
 # gpg key id
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 

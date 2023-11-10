@@ -86,3 +86,43 @@
   args:
     chdir: "C:\\Program Files\\Mondoo"
   when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode
+
+- name: Store update command as string (Scheduled Task)
+  ansible.builtin.set_fact:
+    task_cmd: "-NoProfile -WindowStyle Hidden -ExecutionPolicy RemoteSigned -Command &{ [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object Net.Webclient; "
+  when: update_windows_enabled
+
+- name: Add Proxy to Scheduled Task command
+  ansible.builtin.set_fact:
+    task_cmd: "{{ '$wc.proxy = New-Object System.Net.WebProxy(\"' + proxy_env['https_proxy'] + '\"); ' }}"
+  when: proxy_env['https_proxy'] is defined and update_windows_enabled
+
+- name: Add Install Powershell Script to Scheduled Task Command
+  ansible.builtin.set_fact:
+    task_cmd: "{{ task_cmd + 'iex ($wc.DownloadString(\\\"https://install.mondoo.com/ps1\\\")); Install-Mondoo -Service enable' }}"
+  when: update_windows_enabled
+
+- name: Add Proxy to Install command wihin Scheduled Task command
+  ansible.builtin.set_fact:
+    task_cmd: "{{ task_cmd + ' -Proxy \"' + proxy_env['https_proxy'] + '\"' }}"
+  when: proxy_env['https_proxy'] is defined and update_windows_enabled
+
+- name: Create the Windows Update Task for cnspec
+  community.windows.win_scheduled_task:
+    name: MondooUpdater
+    description: Mondoo Updater Task
+    actions:
+      - path: Powershell.exe
+        arguments: "{{ task_cmd + ';}' }}"
+    triggers:
+      - type: daily
+        days_interval: "{{ update_windows_interval }}"
+        start_boundary: "{{ update_windows_time }}"
+        enabled: yes
+    username: NT AUTHORITY\SYSTEM
+    run_level: Highest
+    compatibility: 4
+    path: Mondoo
+    state: present
+    enabled: yes
+  when: update_windows_enabled
