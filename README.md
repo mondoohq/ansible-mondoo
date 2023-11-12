@@ -71,9 +71,9 @@ In addition we support the following variables:
 | `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                                  |
 | `annotations`                 | set annotations/ tags for the node                                                     |
 | `update_linux_enabled`        | set to true if you want to enable the update task for linux via cron job               |
-| `update_linux_interval`       | define the update interval in days for the cnspec update, example */3 for every 3 days |
-| `update_linux_time_hour`      | define the hour at which the task is to be carried out                                 |
-| `update_linux_time_minute`    | define the minute at which the task is to be carried out                               |
+| `update_linux_cron_day`       | define the update interval in days for the cnspec update, example */3 for every 3 days |
+| `update_linux_cron_hour`      | define the hour at which the task is to be carried out                                 |
+| `update_linux_cron_minute`    | define the minute at which the task is to be carried out                               |
 | `update_windows_enabled`      | set to true if you want to enable the update task for windows via scheduled task       |
 | `update_windows_interval`     | define the update interval in days for the cnspec update                               |
 | `update_windows_time`         | define the time at which the task is to be carried out                                 |
@@ -143,9 +143,9 @@ If you want to use the Linux update task
         force_registration: true
         ensure_managed_client: true
         update_linux_enabled: true
-        update_linux_interval: "*"
-        update_linux_time_hour: "11"
-        update_linux_time_minute: "40"
+        update_linux_cron_day: "*"
+        update_linux_cron_hour: "11"
+        update_linux_cron_minute: "40"
 ```
 
 1. Run the playbook with the local hosts file

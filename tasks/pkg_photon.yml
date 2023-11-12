@@ -14,7 +14,30 @@
   become: "{{ use_become }}"
   when: not ansible_check_mode
 
+- name: Update the repository cache
+  ansible.builtin.command: tdnf makecache
+  become: "{{ use_become }}"
+  when: not ansible_check_mode
+
 - name: Ensure Mondoo package is installed
   ansible.builtin.command: tdnf install -y mondoo
   become: "{{ use_become }}"
   when: not ansible_check_mode
+
+- name: Ensure cron is installed
+  ansible.builtin.command: tdnf install -y cronie
+  become: "{{ use_become }}"
+  when: not ansible_check_mode and update_linux_enabled
+
+- name: Ensuring unmasked crond.service
+  ansible.builtin.systemd:
+    name: crond.service
+    masked: no
+  when: update_linux_enabled
+
+- name: Configuring crond.service
+  ansible.builtin.service:
+    name: crond.service
+    state: started
+    enabled: yes
+  when: update_linux_enabled

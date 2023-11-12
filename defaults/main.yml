@@ -19,9 +19,9 @@ annotations: ""
 
 # Update Task for cnspec (Linux)
 update_linux_enabled: false
-update_linux_interval: "*/3"
-update_linux_time_hour: "12"
-update_linux_time_minute: "00"
+update_linux_cron_day: "*/3"
+update_linux_cron_hour: "12"
+update_linux_cron_minute: "00"
 
 # Update Task for cnspec (Windows)
 update_windows_enabled: false
