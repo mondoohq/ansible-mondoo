@@ -64,12 +64,19 @@ This playbook demonstrates how to use the Mondoo Package role to install `cnquer
 
 In addition we support the following variables:
 
-| variable                      | description                                                               |
-|-------------------------------|---------------------------------------------------------------------------|
-| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`             |
-| `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo |
-| `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                     |
-| `annotations`                 | set annotations/ tags for the node                                        |
+| variable                      | description                                                                            |
+|-------------------------------|----------------------------------------------------------------------------------------|
+| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`                          |
+| `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo              |
+| `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                                  |
+| `annotations`                 | set annotations/ tags for the node                                                     |
+| `update_linux_enabled`        | set to true if you want to enable the update task for linux via cron job               |
+| `update_linux_cron_day`       | define the update interval in days for the cnspec update, example */3 for every 3 days |
+| `update_linux_cron_hour`      | define the hour at which the task is to be carried out                                 |
+| `update_linux_cron_minute`    | define the minute at which the task is to be carried out                               |
+| `update_windows_enabled`      | set to true if you want to enable the update task for windows via scheduled task       |
+| `update_windows_interval`     | define the update interval in days for the cnspec update                               |
+| `update_windows_time`         | define the time at which the task is to be carried out                                 |
 
 ```yaml
 ---
@@ -102,6 +109,43 @@ If you want to use cnspec behind a proxy
         force_registration: true
         ensure_managed_client: true
       environment: "{{proxy_env}}"
+```
+
+If you want to use the Windows update task
+
+```yaml
+---
+- hosts: windows_hosts
+  become: yes
+
+  roles:
+    - role: ansible-mondoo # if used from galaxy: mondoo.client
+      vars:
+        registration_token: "changeme"
+        force_registration: true
+        ensure_managed_client: true
+        update_windows_enabled: true
+        update_windows_interval: "1"
+        update_windows_time: "15:04"
+```
+
+If you want to use the Linux update task
+
+```yaml
+---
+- hosts: linux_hosts
+  become: yes
+
+  roles:
+    - role: ansible-mondoo # if used from galaxy: mondoo.client
+      vars:
+        registration_token: "changeme"
+        force_registration: true
+        ensure_managed_client: true
+        update_linux_enabled: true
+        update_linux_cron_day: "*"
+        update_linux_cron_hour: "11"
+        update_linux_cron_minute: "40"
 ```
 
 1. Run the playbook with the local hosts file

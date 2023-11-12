@@ -34,3 +34,24 @@
     state: latest
   become: "{{ use_become }}"
   when: not ansible_check_mode
+
+- name: Ensure cron is installed
+  community.general.zypper:
+    name: cron
+    update_cache: yes
+    state: latest
+  become: "{{ use_become }}"
+  when: not ansible_check_mode and update_linux_enabled
+
+- name: Ensuring unmasked cron.service
+  ansible.builtin.systemd:
+    name: cron.service
+    masked: no
+  when: update_linux_enabled
+
+- name: Configuring cron.service
+  ansible.builtin.service:
+    name: cron.service
+    state: started
+    enabled: yes
+  when: update_linux_enabled

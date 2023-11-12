@@ -20,6 +20,10 @@
   ansible.builtin.include_tasks: pkg_suse.yml
   when: ansible_os_family == "Suse"
 
+- name: Create update Task
+  ansible.builtin.include_tasks: linux_update.yml
+  when: update_linux_enabled
+
 - name: Login to Mondoo Platform
   ansible.builtin.include_tasks: linux_login.yml
   when: registration_token != ""
