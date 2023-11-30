@@ -35,6 +35,18 @@
     path: "{{ pkg_version_url }}"
     state: present
 
+- name: Get current cnspec version
+  ansible.windows.win_command: cnspec version
+  args:
+    chdir: "C:\\Program Files\\Mondoo"
+  register: cnspec_version
+
+- name: Ensure we have the latest os provider installed
+  ansible.windows.win_command: cnspec providers install os
+  args:
+    chdir: "C:\\Program Files\\Mondoo"
+  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 9.*")
+
 - name: Logout cnquery and cnspec from Mondoo platform
   ansible.windows.win_command: cnspec.exe logout --force --config C:\\ProgramData\\Mondoo\\mondoo.yml
   args:
