@@ -90,7 +90,7 @@
   ansible.windows.win_service:
     name: Mondoo
     start_mode: auto
-    state: started
+    state: restarted
   when: not ansible_check_mode
 
 - name: Ensure cnquery and cnspec are managed
