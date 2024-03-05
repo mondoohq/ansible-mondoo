@@ -77,7 +77,7 @@
   ansible.builtin.set_fact:
     login_cmd: "{{ login_cmd + ' --annotation ' + annotations }}"
   when: annotations | length > 0
-    
+
 - name: Add scan interval to cnspec login command
   ansible.builtin.set_fact:
     login_cmd: "{{ login_cmd + ' --timer ' + timer }}"
