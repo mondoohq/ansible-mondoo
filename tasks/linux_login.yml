@@ -20,7 +20,7 @@
   become: "{{ use_become }}"
   when: not ansible_check_mode
 
-- name: Logout cnquery and cnspec from Mondoo platform
+- name: Logout cnquery and cnspec from Mondoo Platform
   ansible.builtin.command: cnspec logout --force --config /etc/opt/mondoo/mondoo.yml
   args:
     # only run the command if no config file exists
@@ -61,7 +61,7 @@
     login_cmd: "{{ login_cmd + ' --splay ' + splay }}"
   when: splay | length > 0
 
-- name: Login cnquery and cnspec with Mondoo platform
+- name: Login cnquery and cnspec with Mondoo Platform
   ansible.builtin.command:
     cmd: "{{ login_cmd }}"
   args:

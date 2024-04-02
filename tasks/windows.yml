@@ -47,7 +47,7 @@
     chdir: "C:\\Program Files\\Mondoo"
   when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 9.*")
 
-- name: Logout cnquery and cnspec from Mondoo platform
+- name: Logout cnquery and cnspec from Mondoo Platform
   ansible.windows.win_command: cnspec.exe logout --force --config C:\\ProgramData\\Mondoo\\mondoo.yml
   args:
     chdir: "C:\\Program Files\\Mondoo"
@@ -124,7 +124,7 @@
     task_cmd: "{{ task_cmd + 'iex ($wc.DownloadString(\\\"https://install.mondoo.com/ps1\\\")); Install-Mondoo -Service enable' }}"
   when: update_windows_enabled
 
-- name: Add Proxy to Install command wihin Scheduled Task command
+- name: Add Proxy to Install command within Scheduled Task command
   ansible.builtin.set_fact:
     task_cmd: "{{ task_cmd + ' -Proxy \"' + proxy_env['https_proxy'] + '\"' }}"
   when: proxy_env['https_proxy'] is defined and update_windows_enabled

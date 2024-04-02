@@ -124,7 +124,7 @@
 \bOpenstack\b
 
 # s.b. Red Hat
-\bRedHat\b
+# \bRedHat\b # This how Ansible represents it
 \bRedhat\b
 
 # s.b. EuroLinux
