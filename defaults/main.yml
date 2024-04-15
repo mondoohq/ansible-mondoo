@@ -15,6 +15,7 @@ force_registration: false
 registration_token_retrieval: "manual"
 
 timer: ""
+splay: ""
 
 # annotation/ tags for the node
 annotations: ""
