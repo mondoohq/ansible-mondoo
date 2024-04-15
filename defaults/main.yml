@@ -14,6 +14,8 @@ force_registration: false
 # if 'manual' is set, the user need to set `registration_token`
 registration_token_retrieval: "manual"
 
+timer: ""
+
 # annotation/ tags for the node
 annotations: ""
 
