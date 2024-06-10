@@ -77,6 +77,8 @@ In addition we support the following variables:
 | `update_windows_enabled`      | set to true if you want to enable the update task for windows via scheduled task       |
 | `update_windows_interval`     | define the update interval in days for the cnspec update                               |
 | `update_windows_time`         | define the time at which the task is to be carried out                                 |
+| `timer`                       | define the timer to set a scan interval in minutes. The default is 60.                 |
+| `splay`                       | define the delay in the scan timing                                                    |
 
 ```yaml
 ---
