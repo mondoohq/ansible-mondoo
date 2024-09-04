@@ -29,11 +29,19 @@
   # if the credentials are already invalid, the command will throw an error
   ignore_errors: true
 
-- name: Remove existing credentials
+- name: Remove existing credentials from /etc/opt/mondoo
   # ensure no configuration file exists if force mode was activated
   ansible.builtin.file:
     state: absent
     path: /etc/opt/mondoo/mondoo.yml
+    mode: '0644'
+  when: force_registration
+
+- name: Remove existing credentials from Home Directory
+  # ensure no configuration file exists if force mode was activated
+  ansible.builtin.file:
+    state: absent
+    path: "{{ ansible_env.HOME }}/.config/mondoo/mondoo.yml"
     mode: '0644'
   when: force_registration
 
