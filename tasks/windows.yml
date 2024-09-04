@@ -99,7 +99,7 @@
 - name: Set Mondoo startup mode to auto and ensure it is started
   ansible.windows.win_service:
     name: Mondoo
-    start_mode: auto
+    start_mode: delayed
     state: restarted
   when: not ansible_check_mode
 
