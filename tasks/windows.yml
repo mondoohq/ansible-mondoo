@@ -21,7 +21,7 @@
   ansible.builtin.set_fact:
     pkg_version_url: "{{ latest_jsondata.json | json_query(jmesquery) }}"
   vars:
-    jmesquery: "files[*].filename | [?contains(@, 'msi')] | [0]"
+    jmesquery: "files[*].filename | [?contains(@, 'amd64.msi')] | [0]"
   when: pkg_version_url is undefined
 
 - name: Log latest version
