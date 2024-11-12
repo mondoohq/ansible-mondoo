@@ -17,12 +17,19 @@
     var: latest_jsondata.json
   when: pkg_version_url is undefined
 
-- name: Determine latest pkg version
+- name: Determine latest pkg version (amd64)
   ansible.builtin.set_fact:
     pkg_version_url: "{{ latest_jsondata.json | json_query(jmesquery) }}"
   vars:
     jmesquery: "files[*].filename | [?contains(@, 'amd64.msi')] | [0]"
-  when: pkg_version_url is undefined
+  when: ansible_architecture2 | lower != 'arm64' and pkg_version_url is undefined
+
+- name: Determine latest pkg version (arm64)
+  ansible.builtin.set_fact:
+    pkg_version_url: "{{ latest_jsondata.json | json_query(jmesquery) }}"
+  vars:
+    jmesquery: "files[*].filename | [?contains(@, 'arm64.msi')] | [0]"
+  when: ansible_architecture2 | lower == 'arm64' and pkg_version_url is undefined
 
 - name: Log latest version
   ansible.builtin.debug:
