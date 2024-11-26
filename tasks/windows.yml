@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-
 # download the latest json to fetch the latest released version
 
 - name: Determine latest released version
@@ -95,11 +94,15 @@
     chdir: "C:\\Program Files\\Mondoo"
   register: cnspec_version
 
+- name: Log Cnspec Version
+  ansible.builtin.debug:
+    var: cnspec_version
+
 - name: Ensure we have the latest os provider installed
   ansible.windows.win_command: cnspec providers install os
   args:
     chdir: "C:\\Program Files\\Mondoo"
-  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 9.*")
+  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 11.*")
 
 - name: Logout cnquery and cnspec from Mondoo Platform
   ansible.windows.win_command: cnspec.exe logout --force --config C:\\ProgramData\\Mondoo\\mondoo.yml
