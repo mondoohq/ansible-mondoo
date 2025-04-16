@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-
 # download the latest json to fetch the latest released version
 
 - name: Determine latest released version
@@ -31,15 +30,62 @@
     jmesquery: "files[*].filename | [?contains(@, 'arm64.msi')] | [0]"
   when: ansible_architecture2 | lower == 'arm64' and pkg_version_url is undefined
 
+- name: Extract filename from the URL
+  set_fact:
+    pkg_filename: "{{ pkg_version_url | basename }}"
+
 - name: Log latest version
   ansible.builtin.debug:
     var: pkg_version_url
+
+- name: Log Filename
+  ansible.builtin.debug:
+    var: pkg_filename
+
+- name: Create working directory
+  ansible.builtin.file:
+    path: "{{ mondoo_download_path }}"
+    state: directory
+    mode: "0755"
+  delegate_to: localhost
+  run_once: true
+  become: false
+
+- name: Set Mondoo Package variables
+  ansible.builtin.set_fact:
+    mondoo_pkg_src: "{{ mondoo_download_path }}/{{ pkg_filename }}"
+
+- name: Download Mondoo Package
+  ansible.builtin.get_url:
+    url: "{{ pkg_version_url }}"
+    dest: "{{ mondoo_pkg_src }}"
+    mode: 440
+  register: url_result
+  until: url_result is not failed
+  retries: 3
+  delay: 10
+  delegate_to: localhost
+  become: false
+
+- name: Set Monoo pkg path | Windows
+  ansible.builtin.set_fact:
+    mondoo_pkg_path: "{{ mondoo_tmp_windows }}\\{{ pkg_filename }}"
+
+- name: Create working directory | Windows
+  ansible.windows.win_file:
+    path: "{{ mondoo_tmp_windows }}"
+    state: directory
+
+- name: Copy Mondoo Pkg | Windows
+  ansible.windows.win_copy:
+    src: "{{ mondoo_pkg_src }}"
+    dest: "{{ mondoo_pkg_path }}"
 
 # download and install msi
 # we do register as part of the msi workflow to support reregistration more easily
 - name: Install Mondoo msi package
   ansible.windows.win_package:
-    path: "{{ pkg_version_url }}"
+    path: "{{ mondoo_pkg_path }}"
     state: present
 
 - name: Get current cnspec version
@@ -48,11 +94,15 @@
     chdir: "C:\\Program Files\\Mondoo"
   register: cnspec_version
 
+- name: Log Cnspec Version
+  ansible.builtin.debug:
+    var: cnspec_version
+
 - name: Ensure we have the latest os provider installed
   ansible.windows.win_command: cnspec providers install os
   args:
     chdir: "C:\\Program Files\\Mondoo"
-  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 9.*")
+  when: not ansible_check_mode and cnspec_version.stdout is match(".*cnspec 11.*")
 
 - name: Logout cnquery and cnspec from Mondoo Platform
   ansible.windows.win_command: cnspec.exe logout --force --config C:\\ProgramData\\Mondoo\\mondoo.yml

@@ -46,3 +46,7 @@ mondoo_rpm_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
 # zypper repo
 mondoo_zypper_repo: "https://releases.mondoo.com/rpm/{{ ansible_userspace_architecture }}/"
 mondoo_zypper_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
+
+# download and transfer
+mondoo_download_path: /tmp/mondoo_cache/
+mondoo_tmp_windows: "{{ ansible_env.TEMP }}\\s1_install"
