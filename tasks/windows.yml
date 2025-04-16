@@ -31,7 +31,7 @@
   when: ansible_architecture2 | lower == 'arm64' and pkg_version_url is undefined
 
 - name: Extract filename from the URL
-  set_fact:
+  ansible.builtin.set_fact:
     pkg_filename: "{{ pkg_version_url | basename }}"
 
 - name: Log latest version
@@ -67,7 +67,7 @@
   delegate_to: localhost
   become: false
 
-- name: Set Monoo pkg path | Windows
+- name: Set Mondoo pkg path | Windows
   ansible.builtin.set_fact:
     mondoo_pkg_path: "{{ mondoo_tmp_windows }}\\{{ pkg_filename }}"
 
