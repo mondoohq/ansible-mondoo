@@ -28,7 +28,7 @@
       mondoo_subscription_manager_repo_id | length == 0
 
 - name: Ensure Mondoo package is installed
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: mondoo
     update_cache: yes
     state: latest
@@ -36,7 +36,7 @@
   when: not ansible_check_mode
 
 - name: Ensure cron is installed
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: cronie
     update_cache: yes
     state: latest
