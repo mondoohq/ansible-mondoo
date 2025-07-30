@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        config:
-          - image: geerlingguy/docker-ubuntu2204-ansible
-            tag: latest
-          - image: geerlingguy/docker-rockylinux9-ansible
-            tag: latest
-          - image: rsprta/opensuse-ansible
-            tag: latest
+        image:
+          - alpine
+          - amazonlinux
+          - debian
+          - rockylinux
+          - opensuse
+          - ubuntu
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -24,7 +24,6 @@ jobs:
       - name: molecule
         uses: robertdebock/molecule-action@6.0.1
         with:
+          image: ${{ matrix.image }}
           options: parallel
           scenario: default
-          image: ${{ matrix.config.image }}
-          tag: ${{ matrix.config.tag }}
