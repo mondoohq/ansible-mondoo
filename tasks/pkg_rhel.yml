@@ -8,7 +8,10 @@
     name: "{{ mondoo_subscription_manager_repo_id }}"
     state: enabled
   become: "{{ use_become }}"
-  when: mondoo_subscription_manager_repo_id | length > 0
+  when:
+    - not ansible_check_mode
+    - mondoo_subscription_manager_repo_id is defined
+    - mondoo_subscription_manager_repo_id | length > 0
 
 - name: Install Mondoo rpm repository
   ansible.builtin.yum_repository:
@@ -22,7 +25,7 @@
   when:
     - not ansible_check_mode
     - mondoo_subscription_manager_repo_id is undefined or
-      mondoo_subscription_manager_repo_id | length > 0
+      mondoo_subscription_manager_repo_id | length = 0
 
 - name: Ensure Mondoo package is installed
   ansible.builtin.yum:
