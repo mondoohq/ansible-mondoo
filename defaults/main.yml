@@ -40,6 +40,8 @@ mondoo_deb_gpgkey: "https://releases.mondoo.com/debian/pubkey.gpg"
 mondoo_deb_gpgkey_dest: "/usr/share/keyrings/mondoo-archive-keyring.gpg"
 
 # yum repo and keys
+# 'mondoo_subscription_manager_repo_id' explicitly excludes 'mondoo_rpm_*'
+mondoo_subscription_manager_repo_id: ""
 mondoo_rpm_repo: "https://releases.mondoo.com/rpm/$basearch/"
 mondoo_rpm_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
 
