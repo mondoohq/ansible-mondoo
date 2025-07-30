@@ -31,7 +31,7 @@
   when: ansible_architecture2 | lower == 'arm64' and pkg_version_url is undefined
 
 - name: Extract filename from the URL
-  set_fact:
+  ansible.builtin.set_fact:
     pkg_filename: "{{ pkg_version_url | basename }}"
 
 - name: Log latest version
