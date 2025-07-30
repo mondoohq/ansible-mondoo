@@ -22,8 +22,12 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: molecule
-        uses: robertdebock/molecule-action@6.0.1
+        uses: gofrolist/molecule-action@v2
         with:
-          image: ${{ matrix.image }}
-          options: parallel
-          scenario: default
+          molecule_options: --debug --base-config molecule/_shared/base.yml
+          molecule_command: test
+          molecule_args: --scenario-name default
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+          IMAGE: ${{ matrix.image }}
+          TAG: latest
