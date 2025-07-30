@@ -25,7 +25,7 @@
   when:
     - not ansible_check_mode
     - mondoo_subscription_manager_repo_id is undefined or
-      mondoo_subscription_manager_repo_id | length = 0
+      mondoo_subscription_manager_repo_id | length == 0
 
 - name: Ensure Mondoo package is installed
   ansible.builtin.yum:
