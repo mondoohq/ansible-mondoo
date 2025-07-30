@@ -29,15 +29,15 @@ The role is published at Ansible Galaxy: [Mondoo/Client role](https://galaxy.ans
 
 ## Role Variables
 
-| Name                           | Default Value | Description                                                                                                                         |
-| ------------------------------ | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `registration_token_retrieval` | `manual`      | `manual` requires to set ``registration_token` |
+| Name                           | Default Value | Description                                                                                         |
+| ------------------------------ | ------------- | --------------------------------------------------------------------------------------------------- |
+| `registration_token_retrieval` | `manual`      | `manual` requires to set ``registration_token`                                                      |
 | `registration_token`           | n/a           | manually set the Mondoo Platform Registration Token that is used to register `cnquery` and `cnspec` |
-| `force_registration`           | false         | forces re-registration for each run                                                                                                 |
+| `force_registration`           | false         | forces re-registration for each run                                                                 |
 
 ## Dependencies
 
-This role has no role dependencies
+This role requires `community.general` to be installed for several tasks.
 
 ## Example: Apply Ansible Playbook to Amazon EC2 Linux instance
 
@@ -64,21 +64,24 @@ This playbook demonstrates how to use the Mondoo Package role to install `cnquer
 
 In addition we support the following variables:
 
-| variable                      | description                                                                            |
-|-------------------------------|----------------------------------------------------------------------------------------|
-| `force_registration: true`    | set to true if you want to re-register `cnquery` and `cnspec`                          |
-| `ensure_managed_client: true` | ensures the configured clients are configured as managed Client in Mondoo              |
-| `proxy_env['https_proxy']`    | set the proxy for the `cnspec` client                                                  |
-| `annotations`                 | set annotations/ tags for the node                                                     |
-| `update_linux_enabled`        | set to true if you want to enable the update task for linux via cron job               |
-| `update_linux_cron_day`       | define the update interval in days for the cnspec update, example */3 for every 3 days |
-| `update_linux_cron_hour`      | define the hour at which the task is to be carried out                                 |
-| `update_linux_cron_minute`    | define the minute at which the task is to be carried out                               |
-| `update_windows_enabled`      | set to true if you want to enable the update task for windows via scheduled task       |
-| `update_windows_interval`     | define the update interval in days for the cnspec update                               |
-| `update_windows_time`         | define the time at which the task is to be carried out                                 |
-| `timer`                       | define the timer to set a scan interval in minutes. The default is 60.                 |
-| `splay`                       | define the delay in the scan timing                                                    |
+| variable                              | description                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `force_registration: true`            | set to true if you want to re-register `cnquery` and `cnspec`                                                             |
+| `ensure_managed_client: true`         | ensures the configured clients are configured as managed Client in Mondoo                                                 |
+| `proxy_env['https_proxy']`            | set the proxy for the `cnspec` client                                                                                     |
+| `annotations`                         | set annotations/ tags for the node                                                                                        |
+| `update_linux_enabled`                | set to true if you want to enable the update task for linux via cron job                                                  |
+| `update_linux_cron_day`               | define the update interval in days for the cnspec update, example \*/3 for every 3 days                                   |
+| `update_linux_cron_hour`              | define the hour at which the task is to be carried out                                                                    |
+| `update_linux_cron_minute`            | define the minute at which the task is to be carried out                                                                  |
+| `update_windows_enabled`              | set to true if you want to enable the update task for windows via scheduled task                                          |
+| `update_windows_interval`             | define the update interval in days for the cnspec update                                                                  |
+| `update_windows_time`                 | define the time at which the task is to be carried out                                                                    |
+| `timer`                               | define the timer to set a scan interval in minutes. The default is 60.                                                    |
+| `splay`                               | define the delay in the scan timing                                                                                       |
+| `mondoo_subscription_manager_repo_id` | ID of the RPM repository shown by `subscription-manager` command (when defined, `mondoo_rpm_*` variables will be ignored) |
+| `mondoo_rpm_repo`                     | URL of the RPM repository (defaults to "https://releases.mondoo.com/rpm/$basearch/")                                      |
+| `mondoo_rpm_gpgkey`                   | GPG of the RPM repository (defaults to "https://releases.mondoo.com/rpm/pubkey.gpg")                                      |
 
 ```yaml
 ---
@@ -276,7 +279,6 @@ fatal: [123.123.247.76]: FAILED! => {"ansible_facts": {}, "changed": false, "fai
 ```
 
 Ansible in combination with Win32-OpenSSH versions older than v7.9.0.0p1-Beta do not work when `powershell` is the shell type, set the shell type to `cmd`
-
 
 **Error: `You need to install 'jmespath' prior to running json_query filter"`**
 
