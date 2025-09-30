@@ -18,11 +18,11 @@ jobs:
             tag: latest
     steps:
       - name: checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           path: "${{ github.repository }}"
       - name: molecule
-        uses: robertdebock/molecule-action@6.0.1
+        uses: robertdebock/molecule-action@d3e37309fc9c287d6a3507d172520d37df0e2dda # 6.0.1
         with:
           options: parallel
           scenario: default
