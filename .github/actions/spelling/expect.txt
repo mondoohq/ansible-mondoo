@@ -1,5 +1,4 @@
 Ansiball
-copywrite
 jsondata
 linux
 opensuse

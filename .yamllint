@@ -3,6 +3,7 @@ extends: default
 
 ignore: |
   *.mql.yaml
+  .github/workflows/*.yaml
 
 rules:
   braces:
