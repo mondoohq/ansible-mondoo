@@ -12,6 +12,8 @@ jobs:
         config:
           - image: geerlingguy/docker-ubuntu2204-ansible
             tag: latest
+          - image: geerlingguy/docker-debian13-ansible
+            tag: latest
           - image: geerlingguy/docker-rockylinux9-ansible
             tag: latest
           - image: rsprta/opensuse-ansible
