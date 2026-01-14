@@ -44,7 +44,7 @@
   ansible.builtin.deb822_repository:
     name: mondoo
     types: deb
-    uris: "{{ mondoo_deb_repo }}"
+    uris: "{{ mondoo_deb_repo_base_url }}"
     suites: stable
     components: main
     signed_by: "{{ mondoo_deb_gpgkey }}"
