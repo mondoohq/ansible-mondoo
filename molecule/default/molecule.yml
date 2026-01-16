@@ -9,9 +9,10 @@ driver:
 platforms:
   - name: instance
     image: ${image}:${tag:-latest}
-    command: ${container_command:-""}
+    command: ${container_command:-"/sbin/init"}
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw  # this needs rw to get access to /tmp
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - /tmp
     privileged: true
     pre_build_image: true
     capabilities:
@@ -20,5 +21,8 @@ platforms:
       - LINUX_IMMUTABLE
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      remote_tmp: /tmp/.ansible
 verifier:
   name: ansible
