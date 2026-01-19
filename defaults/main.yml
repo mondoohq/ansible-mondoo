@@ -35,7 +35,8 @@ update_windows_time: "12:00:00"
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 
 # deb repo
-mondoo_deb_repo: "https://releases.mondoo.com/debian/ stable main"
+mondoo_deb_repo_base_url: "https://releases.mondoo.com/debian/"
+mondoo_deb_repo: "{{ mondoo_deb_repo_base_url }} stable main"
 mondoo_deb_gpgkey: "https://releases.mondoo.com/debian/pubkey.gpg"
 mondoo_deb_gpgkey_dest: "/usr/share/keyrings/mondoo-archive-keyring.gpg"
 
