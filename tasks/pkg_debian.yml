@@ -40,6 +40,17 @@
     - not ansible_check_mode
     - ansible_distribution != "Debian" or (ansible_distribution == "Debian" and ansible_distribution_major_version | int <= 12)
 
+- name: Install python3-debian for DEB822 repository support (Debian 13+)
+  ansible.builtin.apt:
+    name: python3-debian
+    state: present
+    update_cache: yes
+  become: true
+  when:
+    - not ansible_check_mode
+    - ansible_distribution == "Debian"
+    - ansible_distribution_major_version | int >= 13
+
 - name: Configure Mondoo deb repository (DEB822 format)
   ansible.builtin.deb822_repository:
     name: mondoo
