@@ -14,6 +14,9 @@
   when: not ansible_check_mode
 
 - name: Configure repository for Debian <= 12 and other distributions
+  when:
+    - not ansible_check_mode
+    - ansible_distribution != "Debian" or (ansible_distribution == "Debian" and ansible_distribution_major_version | int <= 12)
   block:
     - name: Add Mondoo apt repository key.
       ansible.builtin.get_url:
@@ -36,9 +39,6 @@
         state: "present"
         update_cache: yes
       become: "{{ use_become }}"
-  when:
-    - not ansible_check_mode
-    - ansible_distribution != "Debian" or (ansible_distribution == "Debian" and ansible_distribution_major_version | int <= 12)
 
 - name: Install python3-debian for DEB822 repository support (Debian 13+)
   ansible.builtin.apt:
@@ -60,7 +60,7 @@
     components: main
     signed_by: "{{ mondoo_deb_gpgkey }}"
   become: "{{ use_become }}"
-  when: 
+  when:
     - not ansible_check_mode
     - ansible_distribution == "Debian"
     - ansible_distribution_major_version | int >= 13
