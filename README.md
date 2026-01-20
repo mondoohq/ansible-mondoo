@@ -248,7 +248,6 @@ make setup/env
 ```bash
 make setup/env
 Environment not found, creating it first...
-Using CPython 3.11.14
 Creating virtual environment at: molecule-env
 Activate with: source molecule-env/bin/activate
 Installing molecule dependencies...
@@ -261,7 +260,6 @@ Installed 47 packages in 49ms
  + ansible-lint==26.1.1
 ...
  + urllib3==2.6.3
- + wcmatch==10.1
  + yamllint==1.38.0
 Ansible testing environment ready!
 IMPORTANT: Run 'source molecule-env/bin/activate' before testing
@@ -296,7 +294,7 @@ source molecule-env/bin/activate
 make molecule/debian/12        # Test Debian 12
 make molecule/ubuntu/2404      # Test Ubuntu 24.04
 make molecule/rhel/rocky9      # Test Rocky Linux 9
-make molecule/suse/opensuse    # Test OpenSUSE
+make molecule/suse/opensuse    # Test openSUSE
 ```
 
 **Test Multiple Distributions:**

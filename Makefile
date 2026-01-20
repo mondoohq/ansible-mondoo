@@ -125,7 +125,7 @@ molecule/rhel/fedora40: ## Test with Fedora 40
 	@export image=geerlingguy/docker-fedora40-ansible tag=latest && molecule test -s default
 
 # Molecule Testing - SUSE Family
-molecule/suse/opensuse: ## Test with OpenSUSE
+molecule/suse/opensuse: ## Test with openSUSE
 	$(call check_venv)
 	@export image=rsprta/opensuse-ansible tag=latest && molecule test -s default
 
