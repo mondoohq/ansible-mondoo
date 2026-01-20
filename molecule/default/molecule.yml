@@ -27,3 +27,11 @@ provisioner:
       remote_tmp: /tmp/.ansible
 verifier:
   name: ansible
+scenario:
+  name: default
+  test_sequence:
+    - create
+    - prepare
+    - converge
+    - verify
+    - destroy

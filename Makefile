@@ -45,12 +45,7 @@ help: ## Show this help message
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-28s$(RESET) %s\n", $$1, $$2}'
 
 # Development Setup
-setup/molecule: ## Setup molecule testing environment with uv
-	@echo "$(YELLOW)Setting up molecule environment...$(RESET)"
-	uv venv --python 3.11 --clear molecule-env
-	@echo "$(GREEN)Environment created. Run 'source molecule-env/bin/activate' then run setup again$(RESET)"
-
-setup/install: ## Install molecule dependencies (creates environment if needed)
+setup/env: ## Setup Python environment with ansible testing tools
 	@if [ -n "$$VIRTUAL_ENV" ]; then \
 		echo "$(RED)ERROR: Virtual environment already activated!$(RESET)"; \
 		echo "$(YELLOW)Run 'deactivate' first, then run this command$(RESET)"; \
@@ -63,11 +58,37 @@ setup/install: ## Install molecule dependencies (creates environment if needed)
 		echo "$(GREEN)Environment exists$(RESET)"; \
 	fi
 	@echo "$(YELLOW)Installing molecule dependencies...$(RESET)"
-	uv pip install --python molecule-env/bin/python ansible-core==2.18.12 molecule==6.0.3 molecule-docker==2.1.0
-	@echo "$(GREEN)Molecule environment ready!$(RESET)"
+	uv pip install --python molecule-env/bin/python ansible-core==2.18.12 molecule==6.0.3 molecule-docker==2.1.0 ansible-lint jmespath
+	@echo "$(GREEN)Ansible testing environment ready!$(RESET)"
 	@echo "$(YELLOW)IMPORTANT: Run 'source molecule-env/bin/activate' before testing$(RESET)"
 	@echo "$(CYAN)Then you can use: make molecule/debian/12$(RESET)"
 
+setup/dev: ## Configure molecule to test local code instead of installed role (from your home directory)
+	@echo "$(YELLOW)Configuring molecule for local development testing...$(RESET)"
+	@printf "[defaults]\nroles_path = ./roles\n" > ansible.cfg
+	@rm -rf roles/
+	@mkdir -p roles
+	@ln -sf ../.. roles/ansible-mondoo
+	@echo "$(GREEN)Molecule configured to test local repository code!$(RESET)"
+	@echo "$(CYAN)Tests will now use your current changes, not installed Galaxy role$(RESET)"
+
+setup/clean: ## Clean local development environment
+	@echo "$(YELLOW)Cleaning local development environment...$(RESET)"
+	@rm -f ansible.cfg
+	@rm -rf roles/
+	@echo "$(GREEN)Local development environment cleaned!$(RESET)"
+
+setup/reset: ## Clean everything including virtual environment
+	@echo "$(YELLOW)Resetting all development environments...$(RESET)"
+	@rm -f ansible.cfg
+	@rm -rf roles/
+	@rm -rf molecule-env/
+	@echo "$(GREEN)All development environments reset!$(RESET)"
+
+# Linting
+lint: ## Run ansible-lint on the role
+	@echo "$(YELLOW)Running ansible-lint...$(RESET)"
+	@molecule-env/bin/ansible-lint .
 
 # License Management
 license/headers/check: ## Check license headers
