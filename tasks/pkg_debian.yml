@@ -40,30 +40,52 @@
         update_cache: yes
       become: "{{ use_become }}"
 
-- name: Install python3-debian for DEB822 repository support (Debian 13+)
-  ansible.builtin.apt:
-    name: python3-debian
-    state: present
-    update_cache: yes
-  become: true
+- name: Configure repository for Debian 13+ (DEB822 format)
   when:
     - not ansible_check_mode
     - ansible_distribution == "Debian"
     - ansible_distribution_major_version | int >= 13
+  block:
+    - name: Install python3-debian for DEB822 repository support (Debian 13+)
+      ansible.builtin.apt:
+        name: python3-debian
+        state: present
+        update_cache: yes
+      become: true
+      retries: 3
+      delay: 5
+      register: python3_debian_install
+      until: python3_debian_install is succeeded
 
-- name: Configure Mondoo deb repository (DEB822 format)
-  ansible.builtin.deb822_repository:
-    name: mondoo
-    types: deb
-    uris: "{{ mondoo_deb_repo_base_url }}"
-    suites: stable
-    components: main
-    signed_by: "{{ mondoo_deb_gpgkey }}"
-  become: "{{ use_become }}"
-  when:
-    - not ansible_check_mode
-    - ansible_distribution == "Debian"
-    - ansible_distribution_major_version | int >= 13
+    - name: Verify python3-debian installation
+      ansible.builtin.command: python3 -c "import debian.deb822; print('DEB822 support available')"
+      register: deb822_check
+      changed_when: false
+      failed_when: deb822_check.rc != 0
+
+    - name: Configure Mondoo deb repository (DEB822 format for Debian 13+)
+      ansible.builtin.deb822_repository:
+        name: mondoo
+        types: deb
+        uris: "{{ mondoo_deb_repo_base_url }}"
+        suites: stable
+        components: main
+        signed_by: "{{ mondoo_deb_gpgkey }}"
+      become: "{{ use_become }}"
+      retries: 3
+      delay: 5
+      register: deb822_repo_config
+      until: deb822_repo_config is succeeded
+
+    - name: Validate DEB822 repository configuration
+      ansible.builtin.stat:
+        path: /etc/apt/sources.list.d/mondoo.sources
+      register: deb822_repo_file
+
+    - name: Ensure DEB822 repository file exists
+      ansible.builtin.fail:
+        msg: "DEB822 repository configuration failed - mondoo.sources file not found"
+      when: not deb822_repo_file.stat.exists
 
 - name: Ensure cnquery and cnspec are installed
   ansible.builtin.apt:
