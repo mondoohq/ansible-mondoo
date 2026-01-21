@@ -13,12 +13,12 @@
       ansible.builtin.file:
         path: "{{ cnspec_test_directory }}"
         state: directory
-        mode: 0644
+        mode: '0644'
     - name: Copy cnspec policies to remote
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ cnspec_test_directory }}/{{ item | basename }}"
-        mode: 0644
+        mode: '0644'
       with_fileglob:
         - "{{ playbook_dir }}/tests/*mql.yaml"
     - name: Register test files
