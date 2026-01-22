@@ -213,47 +213,131 @@ ansible-playbook -i hosts playbook.yml
 
 ## Testing
 
-For testing, this role uses molecule. You can install the dependencies via:
+This role uses molecule for testing with a Makefile-based workflow that ensures you test your local changes instead of any installed Galaxy role.
+
+### Prerequisites
+
+Before starting, you need to install `uv` (Python package manager):
+
+**macOS/Linux:**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Or via Homebrew:**
+```bash
+brew install uv
+```
+
+**Or via pip:**
+```bash
+pip install uv
+```
+
+For other installation methods, see: https://docs.astral.sh/uv/getting-started/installation/
+
+### Initial Setup
+
+**Step 1: Setup Python Environment**
+Install all testing tools (molecule, ansible-lint, etc.) in an isolated environment:
 
 ```bash
-pip install molecule
-pip install docker
-pip install 'molecule-plugins[docker]'
+make setup/env
 ```
-
-The `molecule` cli covers the test lifecycle:
 
 ```bash
-# reset molecule
-molecule reset
-# converge the machines with ansible
-image=geerlingguy/docker-ubuntu2204-ansible molecule converge
-# run molecule tests with cnspec
-image=geerlingguy/docker-ubuntu2204-ansible molecule verify
-# for debugging, you can login to individual hosts
-molecule login --host ubuntu
-# destroy the test setup
-molecule destroy
+make setup/env
+Environment not found, creating it first...
+Creating virtual environment at: molecule-env
+Activate with: source molecule-env/bin/activate
+Installing molecule dependencies...
+uv pip install --python molecule-env/bin/python ansible-core==2.18.12 molecule==6.0.3 molecule-docker==2.1.0 ansible-lint jmespath
+Using Python 3.11.14 environment at: molecule-env
+Resolved 47 packages in 20ms
+Installed 47 packages in 49ms
+ + ansible-compat==25.12.0
+ + ansible-core==2.18.12
+ + ansible-lint==26.1.1
+...
+ + urllib3==2.6.3
+ + yamllint==1.38.0
+Ansible testing environment ready!
+IMPORTANT: Run 'source molecule-env/bin/activate' before testing
+Then you can use: make molecule/debian/12
 ```
 
-```
-image=geerlingguy/docker-ubuntu2204-ansible molecule test
-image=rsprta/opensuse-ansible molecule test
-```
-
-NOTE: to be able to test on m1 macOS, you need arm compatible docker images like rockylinux shown above
-
-For linting, we use `ansible-lint`:
+**Step 2: Configure Local Development**
+Configure molecule to test your repository code instead of any installed role from your home directory:
 
 ```bash
-pip3 install ansible-lint
+make setup/dev
 ```
 
-Then you can see all local issues with:
+```bash
+make setup/dev
+Configuring molecule for local development testing...
+Molecule configured to test local repository code!
+Tests will now use your current changes, not installed Galaxy role
+```
 
+**Step 3: Activate Environment**
+Before running any tests, activate the Python environment:
+
+```bash
+source molecule-env/bin/activate
 ```
-ansible-lint
+
+### Running Tests
+
+**Test Specific Distributions:**
+```bash
+make molecule/debian/12        # Test Debian 12
+make molecule/ubuntu/2404      # Test Ubuntu 24.04
+make molecule/rhel/rocky9      # Test Rocky Linux 9
+make molecule/suse/opensuse    # Test openSUSE
 ```
+
+**Test Multiple Distributions:**
+```bash
+make molecule/test/debian      # Test all Debian-based systems
+make molecule/test/rhel        # Test all RHEL-based systems
+make molecule/test/all         # Test all supported distributions
+```
+
+**Molecule Lifecycle Commands:**
+```bash
+make molecule/create           # Create test containers
+make molecule/converge         # Apply the role
+make molecule/verify           # Run verification tests
+make molecule/destroy          # Clean up containers
+make molecule/login            # Login to test container for debugging
+```
+
+### Linting
+
+Run ansible-lint to check code quality:
+
+```bash
+make lint
+```
+
+### Cleanup
+
+**Clean development configuration only:**
+```bash
+make setup/clean
+```
+
+**Reset everything (including Python environment):**
+```bash
+make setup/reset
+```
+
+### Why This Setup?
+
+This Makefile-based approach solves a common problem: ensuring molecule tests use your **local repository code** instead of any role you may have installed in your home directory from Ansible Galaxy. Without this setup, you might accidentally test an older installed version rather than your current changes.
+
+The `make setup/dev` command creates local symlinks that force molecule to use your repository code, while `make setup/env` provides all the testing tools in an isolated environment.
 
 ## Author
 
@@ -297,6 +381,26 @@ Add the following to main.yml and print the ansible_facts to see what is used an
   ansible.builtin.debug:
     var: ansible_facts
 ```
+
+**I can't see my changes taking affect when testing with molecule?**
+
+Double check that you are using the local role as opposed to the role you might have installed within your home profile, especially if you already have answerable installed on your machine.
+Within the molecule output, double check the task paths that are being loaded within the converge runs.
+
+It should for example look like this, ie paths that match this repo.  The official role is `mondoo.client` as opposed to this repo which is called `ansible-mondoo`.
+
+```bash
+TASK [Gathering Facts] *********************************************************
+ok: [instance]
+
+TASK [ansible-mondoo : Linux] **************************************************
+included: /Users/********/git-repo/ansible-mondoo/tasks/linux.yml for instance
+
+TASK [ansible-mondoo : Install mondoo package on Debian] ***********************
+included: /Users/********/git-repo/ansible-mondoo/tasks/pkg_debian.yml for instance
+```
+
+Run the `make setup/dev` task to create the symlinks and ansible.cfg file to force molecule to use the local code.
 
 ## Join the community!
 

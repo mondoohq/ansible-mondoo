@@ -1,2 +1,6 @@
 molecule/default/tests/__pycache__
 test_default.pyc
+
+# Local development files (created by make setup/dev)
+ansible.cfg
+roles/

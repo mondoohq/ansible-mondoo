@@ -2,7 +2,9 @@
 name: CI
 
 on:
-  - push
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -12,9 +14,15 @@ jobs:
         config:
           - image: geerlingguy/docker-ubuntu2204-ansible
             tag: latest
+          - image: geerlingguy/docker-ubuntu2404-ansible
+            tag: latest
+          - image: geerlingguy/docker-debian12-ansible
+            tag: latest
           - image: geerlingguy/docker-debian13-ansible
             tag: latest
           - image: geerlingguy/docker-rockylinux9-ansible
+            tag: latest
+          - image: geerlingguy/docker-fedora40-ansible
             tag: latest
           - image: rsprta/opensuse-ansible
             tag: latest
@@ -30,3 +38,5 @@ jobs:
           scenario: default
           image: ${{ matrix.config.image }}
           tag: ${{ matrix.config.tag }}
+        env:
+          ANSIBLE_REMOTE_TMP: /tmp/.ansible
