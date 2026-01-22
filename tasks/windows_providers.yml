@@ -1,0 +1,28 @@
+# Copyright (c) Mondoo, Inc.
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+
+- name: Ensure mondoo config directory exists
+  ansible.windows.win_file:
+    path: C:\ProgramData\Mondoo
+    state: directory
+  when: not ansible_check_mode
+
+- name: Configure providers_url in mondoo.yml (when different from default)
+  community.windows.win_lineinfile:
+    path: C:\ProgramData\Mondoo\mondoo.yml
+    regexp: '^providers_url:'
+    line: 'providers_url: {{ mondoo_providers_url }}'
+  when:
+    - not ansible_check_mode
+    - mondoo_providers_url != mondoo_default_providers_url
+
+- name: Configure auto_update in mondoo.yml (only when disabled)
+  community.windows.win_lineinfile:
+    path: C:\ProgramData\Mondoo\mondoo.yml
+    regexp: '^auto_update:'
+    line: 'auto_update: false'
+  when:
+    - not ansible_check_mode
+    - not mondoo_providers_autoupdate

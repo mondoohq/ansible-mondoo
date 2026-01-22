@@ -1,0 +1,49 @@
+# Copyright (c) Mondoo, Inc.
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+
+- name: Ensure mondoo config directory exists
+  ansible.builtin.file:
+    dest: /etc/opt/mondoo
+    state: directory
+    mode: '0644'
+  become: "{{ use_become }}"
+  when: not ansible_check_mode
+
+- name: Check if mondoo.yml exists
+  ansible.builtin.stat:
+    path: /etc/opt/mondoo/mondoo.yml
+  register: mondoo_config_file
+
+- name: Create minimal mondoo.yml if it doesn't exist (no registration token scenario)
+  ansible.builtin.file:
+    path: /etc/opt/mondoo/mondoo.yml
+    state: touch
+    mode: '0600'
+  become: "{{ use_become }}"
+  when:
+    - not ansible_check_mode
+    - not mondoo_config_file.stat.exists
+
+- name: Configure providers_url in mondoo.yml (when different from default)
+  ansible.builtin.lineinfile:
+    path: /etc/opt/mondoo/mondoo.yml
+    regexp: '^providers_url:'
+    line: 'providers_url: {{ mondoo_providers_url }}'
+    mode: '0600'
+  become: "{{ use_become }}"
+  when:
+    - not ansible_check_mode
+    - mondoo_providers_url != mondoo_default_providers_url
+
+- name: Configure auto_update in mondoo.yml (only when disabled)
+  ansible.builtin.lineinfile:
+    path: /etc/opt/mondoo/mondoo.yml
+    regexp: '^auto_update:'
+    line: 'auto_update: false'
+    mode: '0600'
+  become: "{{ use_become }}"
+  when:
+    - not ansible_check_mode
+    - not mondoo_providers_autoupdate

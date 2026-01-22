@@ -5,7 +5,8 @@
 # defaults file for mondoo
 
 use_become: true
-latest_version_url: https://releases.mondoo.com/mondoo/latest.json
+mondoo_releases_base_url: "https://releases.mondoo.com"
+latest_version_url: "{{ mondoo_releases_base_url }}/mondoo/latest.json"
 
 # option to force a re-registration
 force_registration: false
@@ -19,6 +20,15 @@ splay: "60"
 
 # annotation/ tags for the node
 annotations: ""
+
+# registration token for mondoo platform
+registration_token: ""
+
+# proxy configuration
+proxy_env: {}
+
+# ensure clients are managed in mondoo platform
+ensure_managed_client: false
 
 # Update Task for cnspec (Linux)
 update_linux_enabled: false
@@ -35,21 +45,26 @@ update_windows_time: "12:00:00"
 mondoo_gpg_keyid: 4CE909E26AE7439C39CE7647AC69C65100E1C42B
 
 # deb repo
-mondoo_deb_repo_base_url: "https://releases.mondoo.com/debian/"
+mondoo_deb_repo_base_url: "{{ mondoo_releases_base_url }}/debian/"
 mondoo_deb_repo: "{{ mondoo_deb_repo_base_url }} stable main"
-mondoo_deb_gpgkey: "https://releases.mondoo.com/debian/pubkey.gpg"
+mondoo_deb_gpgkey: "{{ mondoo_releases_base_url }}/debian/pubkey.gpg"
 mondoo_deb_gpgkey_dest: "/usr/share/keyrings/mondoo-archive-keyring.gpg"
 
 # yum repo and keys
 # 'mondoo_subscription_manager_repo_id' explicitly excludes 'mondoo_rpm_*'
 mondoo_subscription_manager_repo_id: ""
-mondoo_rpm_repo: "https://releases.mondoo.com/rpm/$basearch/"
-mondoo_rpm_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
+mondoo_rpm_repo: "{{ mondoo_releases_base_url }}/rpm/$basearch/"
+mondoo_rpm_gpgkey: "{{ mondoo_releases_base_url }}/rpm/pubkey.gpg"
 
 # zypper repo
-mondoo_zypper_repo: "https://releases.mondoo.com/rpm/{{ ansible_userspace_architecture }}/"
-mondoo_zypper_gpgkey: "https://releases.mondoo.com/rpm/pubkey.gpg"
+mondoo_zypper_repo: "{{ mondoo_releases_base_url }}/rpm/{{ ansible_userspace_architecture }}/"
+mondoo_zypper_gpgkey: "{{ mondoo_releases_base_url }}/rpm/pubkey.gpg"
 
 # download and transfer
 mondoo_download_path: /tmp/mondoo_cache/
 mondoo_tmp_windows: "{{ ansible_env.TEMP }}\\s1_install"
+
+# providers configuration
+mondoo_default_providers_url: "{{ mondoo_releases_base_url }}/providers"
+mondoo_providers_url: "{{ mondoo_default_providers_url }}"
+mondoo_providers_autoupdate: true

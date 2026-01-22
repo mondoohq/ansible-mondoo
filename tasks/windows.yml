@@ -164,7 +164,7 @@
   ansible.windows.win_command: cnspec.exe login
   args:
     chdir: "C:\\Program Files\\Mondoo"
-  when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode
+  when: ensure_managed_client and not ansible_check_mode
 
 - name: Store update command as string (Scheduled Task)
   ansible.builtin.set_fact:
@@ -205,3 +205,6 @@
     state: present
     enabled: yes
   when: update_windows_enabled
+
+- name: Configure Mondoo providers
+  ansible.builtin.include_tasks: windows_providers.yml

@@ -107,4 +107,4 @@
 - name: Ensure cnquery and cnspec are managed
   ansible.builtin.command: cnspec login
   become: "{{ use_become }}"
-  when: (ensure_managed_client is not undefined and ensure_managed_client) and not ansible_check_mode
+  when: ensure_managed_client and not ansible_check_mode

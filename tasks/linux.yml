@@ -27,3 +27,6 @@
 - name: Login to Mondoo Platform
   ansible.builtin.include_tasks: linux_login.yml
   when: registration_token != ""
+
+- name: Configure Mondoo providers
+  ansible.builtin.include_tasks: linux_providers.yml
