@@ -19,7 +19,7 @@ It supports:
 - Red Hat Enterprise Linux and derivatives (CentOS/AlmaLinux/Rocky Linux)
 - SUSE & openSUSE
 - Ubuntu
-- Windows 10, 11, 2016, 2019, 2022
+- Windows 10, 11, 2019, 2022, 2025
 
 The role is published at Ansible Galaxy: [Mondoo/Client role](https://galaxy.ansible.com/mondoo/client).
 
@@ -50,7 +50,7 @@ This playbook demonstrates how to use the Mondoo Package role to install `cnquer
 54.172.7.243  ansible_user=ec2-user
 ```
 
-2. Create a `playbook.yml` and change the `registration_token`:
+1. Create a `playbook.yml` and change the `registration_token`:
 
 ```yaml
 ---
@@ -80,8 +80,10 @@ In addition we support the following variables:
 | `timer`                               | define the timer to set a scan interval in minutes. The default is 60.                                                    |
 | `splay`                               | define the delay in the scan timing                                                                                       |
 | `mondoo_subscription_manager_repo_id` | ID of the RPM repository shown by `subscription-manager` command (when defined, `mondoo_rpm_*` variables will be ignored) |
-| `mondoo_rpm_repo`                     | URL of the RPM repository (defaults to "https://releases.mondoo.com/rpm/$basearch/")                                      |
-| `mondoo_rpm_gpgkey`                   | GPG of the RPM repository (defaults to "https://releases.mondoo.com/rpm/pubkey.gpg")                                      |
+| `mondoo_rpm_repo`                     | URL of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/$basearch/>")                                      |
+| `mondoo_rpm_gpgkey`                   | GPG of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/pubkey.gpg>")                                      |
+| `mondoo_releases_base_url`            | **Advanced**: Base URL for Mondoo releases (defaults to "https://releases.mondoo.com") - only set if custom URL required  |
+| `mondoo_providers_url`                | **Advanced**: URL for provider downloads (defaults to "https://releases.mondoo.com/providers") - only set if custom URL required |
 
 ```yaml
 ---
@@ -166,7 +168,7 @@ ansible-galaxy install mondoo.client
 ansible-playbook -i hosts playbook.yml
 ```
 
-4. Log into the [Mondoo Console](https://console.mondoo.com) to view the scan results
+1. Log into the [Mondoo Console](https://console.mondoo.com) to view the scan results
 
 ## Apply Ansible Playbook to Amazon EC2 Windows instance
 
@@ -185,7 +187,7 @@ or if you are going to use ssh:
 3.235.247.76 ansible_port=22 ansible_connection=ssh ansible_user=admin ansible_shell_type=cmd
 ```
 
-2. Create a `playbook.yml` and change the `registration_token`:
+1. Create a `playbook.yml` and change the `registration_token`:
 
 If you are targeting windows, the configuration is slightly different since `become` needs to be deactivated:
 
@@ -198,7 +200,7 @@ If you are targeting windows, the configuration is slightly different since `bec
         force_registration: false
 ```
 
-3. Run the playbook with the local hosts file
+1. Run the playbook with the local hosts file
 
 ```bash
 # download mondoo role from github
@@ -220,21 +222,24 @@ This role uses molecule for testing with a Makefile-based workflow that ensures 
 Before starting, you need to install `uv` (Python package manager):
 
 **macOS/Linux:**
+
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 **Or via Homebrew:**
+
 ```bash
 brew install uv
 ```
 
 **Or via pip:**
+
 ```bash
 pip install uv
 ```
 
-For other installation methods, see: https://docs.astral.sh/uv/getting-started/installation/
+For other installation methods, see: <https://docs.astral.sh/uv/getting-started/installation/>
 
 ### Initial Setup
 
@@ -290,6 +295,7 @@ source molecule-env/bin/activate
 ### Running Tests
 
 **Test Specific Distributions:**
+
 ```bash
 make molecule/debian/12        # Test Debian 12
 make molecule/ubuntu/2404      # Test Ubuntu 24.04
@@ -298,6 +304,7 @@ make molecule/suse/opensuse    # Test openSUSE
 ```
 
 **Test Multiple Distributions:**
+
 ```bash
 make molecule/test/debian      # Test all Debian-based systems
 make molecule/test/rhel        # Test all RHEL-based systems
@@ -305,6 +312,7 @@ make molecule/test/all         # Test all supported distributions
 ```
 
 **Molecule Lifecycle Commands:**
+
 ```bash
 make molecule/create           # Create test containers
 make molecule/converge         # Apply the role
@@ -324,11 +332,13 @@ make lint
 ### Cleanup
 
 **Clean development configuration only:**
+
 ```bash
 make setup/clean
 ```
 
 **Reset everything (including Python environment):**
+
 ```bash
 make setup/reset
 ```
@@ -402,6 +412,6 @@ included: /Users/********/git-repo/ansible-mondoo/tasks/pkg_debian.yml for insta
 
 Run the `make setup/dev` task to create the symlinks and ansible.cfg file to force molecule to use the local code.
 
-## Join the community!
+## Join the community
 
 Join the [Mondoo Community GitHub Discussions](https://github.com/orgs/mondoohq/discussions) to collaborate on policy as code and security automation.
