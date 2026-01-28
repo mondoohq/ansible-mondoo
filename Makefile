@@ -1,5 +1,5 @@
 # Ansible Role Makefile
-# Copyright (c) Mondoo, Inc.
+# Copyright Mondoo, Inc. 2026
 
 .PHONY: help
 .DEFAULT_GOAL := help
@@ -26,6 +26,10 @@ help: ## Show this help message
 	@echo ""
 	@echo "$(YELLOW)Development Setup:$(RESET)"
 	@grep -E '^setup/.*:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-28s$(RESET) %s\n", $$1, $$2}'
+	@echo ""
+	@echo "$(YELLOW)Code Quality:$(RESET)"
+	@grep -E '^(lint|yamllint|check|check-all):.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-28s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
 	@echo "$(YELLOW)License Management:$(RESET)"
@@ -87,8 +91,20 @@ setup/reset: ## Clean everything including virtual environment
 
 # Linting
 lint: ## Run ansible-lint on the role
+	$(call check_venv)
 	@echo "$(YELLOW)Running ansible-lint...$(RESET)"
-	@molecule-env/bin/ansible-lint .
+	@ansible-lint .
+
+yamllint: ## Run yamllint on YAML files
+	$(call check_venv)
+	@echo "$(YELLOW)Running yamllint...$(RESET)"
+	@yamllint .
+
+check-all: ## Run both ansible-lint and yamllint
+	@echo "$(CYAN)Running all code quality checks...$(RESET)"
+	@make lint
+	@make yamllint
+	@echo "$(GREEN)All checks completed successfully!$(RESET)"
 
 # License Management
 license/headers/check: ## Check license headers
