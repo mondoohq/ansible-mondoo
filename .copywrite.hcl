@@ -13,6 +13,7 @@ project {
     "**/testdata/**",
     "**/*.pb.go",
     "**/*_string.go",
-    "molecule-env/"
+    "molecule-env/**",
+    ".ansible/**"
   ]
 }
