@@ -1,11 +1,26 @@
-# Copyright (c) Mondoo, Inc.
+# Copyright Mondoo, Inc. 2026, 0
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
 # defaults file for mondoo
 
 use_become: true
+
+# This is the base URL for Mondoo releases; it is built into the product.
+# We don’t recommend changing it unless you have a specific need.
 mondoo_releases_base_url: "https://releases.mondoo.com"
+# This is the default URL for provider downloads; it is built into the product.
+# We don’t recommend changing it unless you have a specific need.
+# The default providers URL is used to determine whether a custom provider URL
+# should be set within the config.
+# By default, we do not set this value in the config unless it differs from the default.
+# If you want to use a custom provider URL, set `mondoo_providers_url` to your custom URL.
+mondoo_default_providers_url: "https://releases.mondoo.com/providers"
+
+# providers configuration
+mondoo_providers_url: "{{ mondoo_default_providers_url }}"
+mondoo_providers_autoupdate: true
+
 latest_version_url: "{{ mondoo_releases_base_url }}/mondoo/latest.json"
 
 # option to force a re-registration
@@ -63,8 +78,3 @@ mondoo_zypper_gpgkey: "{{ mondoo_releases_base_url }}/rpm/pubkey.gpg"
 # download and transfer
 mondoo_download_path: /tmp/mondoo_cache/
 mondoo_tmp_windows: "{{ ansible_env.TEMP }}\\s1_install"
-
-# providers configuration
-mondoo_default_providers_url: "{{ mondoo_releases_base_url }}/providers"
-mondoo_providers_url: "{{ mondoo_default_providers_url }}"
-mondoo_providers_autoupdate: true
