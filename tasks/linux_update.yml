@@ -3,6 +3,19 @@
 
 ---
 
+# CIS "Ensure access to all log files has been configured" requires 0640 or
+# stricter; the cron job's shell redirect would otherwise create the file
+# with the default umask (0644).
+- name: Ensure update log file exists with CIS-compliant permissions
+  ansible.builtin.file:
+    path: /var/log/mondoo_update
+    state: touch
+    owner: root
+    group: root
+    mode: "0640"
+    access_time: preserve
+    modification_time: preserve
+
 - name: Create cron update task for cnspec update (Debian-based)
   ansible.builtin.cron:
     name: "mondoo-update"
