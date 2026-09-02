@@ -3,10 +3,10 @@
 
 ---
 
-# CIS "Ensure access to all logfiles has been configured" requires 0640 or
+# CIS "Ensure access to all log files has been configured" requires 0640 or
 # stricter; the cron job's shell redirect would otherwise create the file
 # with the default umask (0644).
-- name: Ensure update logfile exists with CIS-compliant permissions
+- name: Ensure update log file exists with CIS-compliant permissions
   ansible.builtin.file:
     path: /var/log/mondoo_update
     state: touch
