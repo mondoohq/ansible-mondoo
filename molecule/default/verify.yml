@@ -55,43 +55,54 @@
           - "'providers_url:' not in (mondoo_config_default.content | b64decode)"
           - "'updates_url:' not in (mondoo_config_default.content | b64decode)"
 
-    - name: Apply provider config tasks with a custom providers URL
-      ansible.builtin.include_role:
-        name: ansible-mondoo
-        tasks_from: linux_providers
-      vars:
-        use_become: false
-        mondoo_providers_url: "https://mirror.example.com/providers"
+    # The block mutates mondoo.yml; the always-restore puts the pre-test
+    # content back even when an assertion fails, so re-running verify against
+    # the same instance starts from the converged state.
+    - name: Test custom URL handling and revert cleanup
+      block:
+        - name: Apply provider config tasks with a custom providers URL
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux_providers
+          vars:
+            use_become: false
+            mondoo_providers_url: "https://mirror.example.com/providers"
 
-    - name: Read mondoo.yml after custom URL run
-      ansible.builtin.slurp:
-        src: /etc/opt/mondoo/mondoo.yml
-      register: mondoo_config_custom
+        - name: Read mondoo.yml after custom URL run
+          ansible.builtin.slurp:
+            src: /etc/opt/mondoo/mondoo.yml
+          register: mondoo_config_custom
 
-    - name: Assert providers_url and derived updates_url are written
-      ansible.builtin.assert:
-        that:
-          - >-
-            mondoo_config_custom.content | b64decode
-            is search('(?m)^providers_url: https://mirror\.example\.com/providers$')
-          - >-
-            mondoo_config_custom.content | b64decode
-            is search('(?m)^updates_url: https://mirror\.example\.com$')
+        - name: Assert providers_url and derived updates_url are written
+          ansible.builtin.assert:
+            that:
+              - >-
+                mondoo_config_custom.content | b64decode
+                is search('(?m)^providers_url: https://mirror\.example\.com/providers$')
+              - >-
+                mondoo_config_custom.content | b64decode
+                is search('(?m)^updates_url: https://mirror\.example\.com$')
 
-    - name: Apply provider config tasks with default URLs again (revert)
-      ansible.builtin.include_role:
-        name: ansible-mondoo
-        tasks_from: linux_providers
-      vars:
-        use_become: false
+        - name: Apply provider config tasks with default URLs again (revert)
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux_providers
+          vars:
+            use_become: false
 
-    - name: Read mondoo.yml after revert to defaults
-      ansible.builtin.slurp:
-        src: /etc/opt/mondoo/mondoo.yml
-      register: mondoo_config_reverted
+        - name: Read mondoo.yml after revert to defaults
+          ansible.builtin.slurp:
+            src: /etc/opt/mondoo/mondoo.yml
+          register: mondoo_config_reverted
 
-    - name: Assert URL keys are removed after revert to defaults
-      ansible.builtin.assert:
-        that:
-          - "'providers_url:' not in (mondoo_config_reverted.content | b64decode)"
-          - "'updates_url:' not in (mondoo_config_reverted.content | b64decode)"
+        - name: Assert URL keys are removed after revert to defaults
+          ansible.builtin.assert:
+            that:
+              - "'providers_url:' not in (mondoo_config_reverted.content | b64decode)"
+              - "'updates_url:' not in (mondoo_config_reverted.content | b64decode)"
+      always:
+        - name: Restore mondoo.yml to its pre-test content
+          ansible.builtin.copy:
+            content: "{{ mondoo_config_default.content | b64decode }}"
+            dest: /etc/opt/mondoo/mondoo.yml
+            mode: '0600'
