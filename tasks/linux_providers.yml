@@ -37,6 +37,19 @@
     - not ansible_check_mode
     - mondoo_providers_url != mondoo_default_providers_url
 
+# cnspec v14+ reads `updates_url` instead of `providers_url`; both are set so
+# the config works before and after a client upgrade.
+- name: Configure updates_url in mondoo.yml (when different from default)
+  ansible.builtin.lineinfile:
+    path: /etc/opt/mondoo/mondoo.yml
+    regexp: '^updates_url:'
+    line: 'updates_url: {{ mondoo_updates_url }}'
+    mode: '0600'
+  become: "{{ use_become }}"
+  when:
+    - not ansible_check_mode
+    - mondoo_updates_url != mondoo_default_updates_url
+
 - name: Configure auto_update in mondoo.yml (only when disabled)
   ansible.builtin.lineinfile:
     path: /etc/opt/mondoo/mondoo.yml
