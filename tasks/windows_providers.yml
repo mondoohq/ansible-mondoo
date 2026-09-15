@@ -9,6 +9,12 @@
     state: directory
   when: not ansible_check_mode
 
+- name: Check if mondoo.yml exists
+  ansible.windows.win_stat:
+    path: C:\ProgramData\Mondoo\mondoo.yml
+  register: mondoo_config_file_win
+  when: not ansible_check_mode
+
 - name: Configure providers_url in mondoo.yml (when different from default)
   community.windows.win_lineinfile:
     path: C:\ProgramData\Mondoo\mondoo.yml
@@ -17,6 +23,18 @@
   when:
     - not ansible_check_mode
     - mondoo_providers_url != mondoo_default_providers_url
+
+# When the URL is back at the default, remove any previously written line so a
+# stale custom URL does not keep overriding the built-in default.
+- name: Remove providers_url from mondoo.yml (when default)
+  community.windows.win_lineinfile:
+    path: C:\ProgramData\Mondoo\mondoo.yml
+    regexp: '^providers_url:'
+    state: absent
+  when:
+    - not ansible_check_mode
+    - mondoo_providers_url == mondoo_default_providers_url
+    - mondoo_config_file_win.stat.exists
 
 # cnspec v14+ reads `updates_url` instead of `providers_url`; both are set so
 # the config works before and after a client upgrade.
@@ -28,6 +46,16 @@
   when:
     - not ansible_check_mode
     - mondoo_updates_url != mondoo_default_updates_url
+
+- name: Remove updates_url from mondoo.yml (when default)
+  community.windows.win_lineinfile:
+    path: C:\ProgramData\Mondoo\mondoo.yml
+    regexp: '^updates_url:'
+    state: absent
+  when:
+    - not ansible_check_mode
+    - mondoo_updates_url == mondoo_default_updates_url
+    - mondoo_config_file_win.stat.exists
 
 - name: Configure auto_update in mondoo.yml (only when disabled)
   community.windows.win_lineinfile:

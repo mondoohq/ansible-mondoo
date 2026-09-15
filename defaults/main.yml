@@ -34,6 +34,9 @@ mondoo_default_updates_url: "https://releases.mondoo.com"
 # `mondoo_providers_url` keep working with v14 clients. Both keys are written
 # to the config when customized; each client version reads its own key and
 # ignores the other.
+# The derivation only handles URLs ending in "/providers". If your custom
+# `mondoo_providers_url` does not end in "/providers", set
+# `mondoo_updates_url` explicitly to the base URL v14 clients should use.
 mondoo_updates_url: "{{ mondoo_providers_url | regex_replace('/providers/?$', '') }}"
 
 latest_version_url: "{{ mondoo_releases_base_url }}/mondoo/latest.json"
