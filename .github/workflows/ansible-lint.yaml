@@ -14,7 +14,7 @@ jobs:
           ln -sf ../.. roles/ansible-mondoo
 
       - name: Run ansible-lint
-        uses: ansible/ansible-lint@5fac056c45595896c973fbde871f01f6cb14d74c # v26.4.0
+        uses: ansible/ansible-lint@665d9e07a1943254d2910faffc106adaf7ea7294 # v26.8.0
 
   license-check:
     runs-on: ubuntu-latest
