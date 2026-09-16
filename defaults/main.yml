@@ -21,6 +21,24 @@ mondoo_default_providers_url: "https://releases.mondoo.com/providers"
 mondoo_providers_url: "{{ mondoo_default_providers_url }}"
 mondoo_providers_autoupdate: true
 
+# This is the default base URL for binary and provider updates used by
+# cnspec v14+; it is built into the product.
+# We don’t recommend changing it unless you have a specific need.
+mondoo_default_updates_url: "https://releases.mondoo.com"
+
+# updates configuration (cnspec v14+)
+# cnspec v14 replaced the `providers_url` config key with `updates_url`,
+# which is the base URL: providers are fetched from `updates_url` + "/providers".
+# For backwards compatibility this defaults to `mondoo_providers_url` with a
+# trailing "/providers" stripped, so playbooks that only set
+# `mondoo_providers_url` keep working with v14 clients. Both keys are written
+# to the config when customized; each client version reads its own key and
+# ignores the other.
+# The derivation only handles URLs ending in "/providers". If your custom
+# `mondoo_providers_url` does not end in "/providers", set
+# `mondoo_updates_url` explicitly to the base URL v14 clients should use.
+mondoo_updates_url: "{{ mondoo_providers_url | regex_replace('/providers/?$', '') }}"
+
 latest_version_url: "{{ mondoo_releases_base_url }}/mondoo/latest.json"
 
 # option to force a re-registration

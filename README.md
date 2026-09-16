@@ -83,7 +83,8 @@ In addition we support the following variables:
 | `mondoo_rpm_repo`                     | URL of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/$basearch/>")                                      |
 | `mondoo_rpm_gpgkey`                   | GPG of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/pubkey.gpg>")                                      |
 | `mondoo_releases_base_url`            | **Advanced**: Base URL for Mondoo releases (defaults to "https://releases.mondoo.com") - only set if custom URL required  |
-| `mondoo_providers_url`                | **Advanced**: URL for provider downloads (defaults to "https://releases.mondoo.com/providers") - only set if custom URL required |
+| `mondoo_providers_url`                | **Advanced**: URL for provider downloads, read by cnspec v13 and older (defaults to "https://releases.mondoo.com/providers") - only set if custom URL required. Setting this also derives `mondoo_updates_url` for v14+ clients |
+| `mondoo_updates_url`                  | **Advanced**: Base URL for binary and provider updates, read by cnspec v14+ which fetches providers from `updates_url` + "/providers" (defaults to `mondoo_providers_url` with a trailing "/providers" stripped, i.e. "https://releases.mondoo.com") - only set if custom URL required. If your `mondoo_providers_url` does not end in "/providers", set this explicitly |
 
 ```yaml
 ---
