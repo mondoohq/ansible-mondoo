@@ -1,0 +1,71 @@
+# Copyright Mondoo, Inc. 2026, 0
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+
+# The cnspec deb and rpm packages (14.12.0+) ship hardened systemd settings at
+# /usr/share/cnspec/systemd/hardening.conf. systemd only reads them once they
+# are copied into the drop-in directory of the cnspec service. No restart is
+# triggered here: linux_login.yml reloads systemd and restarts the service.
+
+- name: Fail on unsupported mondoo_service_hardening value
+  ansible.builtin.fail:
+    msg: >-
+      mondoo_service_hardening must be "enable", "disable" or "" (unset),
+      got "{{ mondoo_service_hardening }}"
+  when: mondoo_service_hardening not in ["enable", "disable"]
+
+# the cnspec service is only managed (and restarted) when a token is given
+- name: Fail when mondoo_service_hardening is set without registration_token
+  ansible.builtin.fail:
+    msg: >-
+      mondoo_service_hardening requires registration_token to be set, the
+      cnspec service is only managed by this role when a token is given
+  when: registration_token == ""
+
+- name: Check if the packaged cnspec hardening settings exist
+  ansible.builtin.stat:
+    path: /usr/share/cnspec/systemd/hardening.conf
+  register: mondoo_hardening_source
+  when: mondoo_service_hardening == "enable"
+
+- name: Fail when the packaged cnspec hardening settings are missing
+  ansible.builtin.fail:
+    msg: >-
+      /usr/share/cnspec/systemd/hardening.conf not found.
+      mondoo_service_hardening: "enable" needs cnspec 14.12.0 or newer
+      installed from the deb or rpm package
+  when:
+    - mondoo_service_hardening == "enable"
+    - not ansible_check_mode
+    - not mondoo_hardening_source.stat.exists
+
+- name: Create cnspec service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/cnspec.service.d
+    state: directory
+    mode: '0755'
+  become: "{{ use_become }}"
+  when: mondoo_service_hardening == "enable"
+
+- name: Copy packaged hardening settings into cnspec service drop-in directory
+  ansible.builtin.copy:
+    src: /usr/share/cnspec/systemd/hardening.conf
+    dest: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0644'
+  become: "{{ use_become }}"
+  register: mondoo_hardening_dropin
+  when:
+    - mondoo_service_hardening == "enable"
+    - not ansible_check_mode
+
+# only the hardening drop-in is removed, other drop-ins are left alone
+- name: Remove hardening settings from cnspec service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+    state: absent
+  become: "{{ use_become }}"
+  when: mondoo_service_hardening == "disable"

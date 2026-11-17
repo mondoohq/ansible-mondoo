@@ -24,6 +24,10 @@
   ansible.builtin.include_tasks: linux_update.yml
   when: update_linux_enabled
 
+- name: Configure cnspec service hardening
+  ansible.builtin.include_tasks: linux_hardening.yml
+  when: mondoo_service_hardening != ""
+
 - name: Login to Mondoo Platform
   ansible.builtin.include_tasks: linux_login.yml
   when: registration_token != ""

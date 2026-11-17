@@ -79,6 +79,7 @@ In addition we support the following variables:
 | `update_windows_time`                 | define the time at which the task is to be carried out                                                                    |
 | `timer`                               | define the timer to set a scan interval in minutes. The default is 60.                                                    |
 | `splay`                               | define the delay in the scan timing                                                                                       |
+| `mondoo_service_hardening`            | Linux only: `enable` applies the hardened systemd settings (memory and CPU limits, hardening options) shipped with the cnspec deb and rpm packages (14.12.0 or newer) to the `cnspec` service, `disable` removes them again. When unset (default `""`), the role leaves the service drop-in directory untouched. Requires `registration_token` |
 | `mondoo_subscription_manager_repo_id` | ID of the RPM repository shown by `subscription-manager` command (when defined, `mondoo_rpm_*` variables will be ignored) |
 | `mondoo_rpm_repo`                     | URL of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/$basearch/>")                                      |
 | `mondoo_rpm_gpgkey`                   | GPG of the RPM repository (defaults to "<https://releases.mondoo.com/rpm/pubkey.gpg>")                                      |
@@ -155,6 +156,24 @@ If you want to use the Linux update task
         update_linux_cron_hour: "11"
         update_linux_cron_minute: "40"
 ```
+
+If you want to apply the hardened systemd settings to the cnspec service on Linux
+
+```yaml
+---
+- hosts: linux_hosts
+  become: yes
+
+  roles:
+    - role: ansible-mondoo # if used from galaxy: mondoo.client
+      vars:
+        registration_token: "changeme"
+        mondoo_service_hardening: "enable"
+```
+
+This copies `/usr/share/cnspec/systemd/hardening.conf` (installed by the package) to
+`/etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf` and restarts the service.
+Set `mondoo_service_hardening: "disable"` to remove the settings again.
 
 1. Run the playbook with the local hosts file
 
