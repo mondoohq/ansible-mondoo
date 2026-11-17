@@ -1,6 +1,9 @@
 Ansiball
+dropin
+isreg
 jsondata
 linux
+noqa
 opensuse
 rhel
 rsprta
