@@ -301,8 +301,11 @@ source molecule-env/bin/activate
 make molecule/debian/12        # Test Debian 12
 make molecule/ubuntu/2404      # Test Ubuntu 24.04
 make molecule/rhel/rocky9      # Test Rocky Linux 9
-make molecule/suse/opensuse    # Test openSUSE
+make molecule/suse/opensuse    # Test openSUSE Leap 16.0
 ```
+
+The openSUSE target first builds its test image locally from `molecule/images/opensuse-leap`,
+since no maintained openSUSE image with systemd and a current Python is published.
 
 **Test Multiple Distributions:**
 

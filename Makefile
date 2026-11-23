@@ -141,9 +141,14 @@ molecule/rhel/fedora40: ## Test with Fedora 40
 	@export image=geerlingguy/docker-fedora40-ansible tag=latest && molecule test -s default
 
 # Molecule Testing - SUSE Family
-molecule/suse/opensuse: ## Test with openSUSE
+# no maintained openSUSE image with systemd and a current Python exists, so it is built locally
+OPENSUSE_IMAGE := mondoo-molecule/opensuse-leap
+OPENSUSE_TAG := 16.0
+
+molecule/suse/opensuse: ## Test with openSUSE Leap 16.0 (image built locally)
 	$(call check_venv)
-	@export image=rsprta/opensuse-ansible tag=latest && molecule test -s default
+	@docker build --build-arg LEAP_VERSION=$(OPENSUSE_TAG) -t $(OPENSUSE_IMAGE):$(OPENSUSE_TAG) molecule/images/opensuse-leap
+	@export image=$(OPENSUSE_IMAGE) tag=$(OPENSUSE_TAG) && molecule test -s default
 
 # Molecule Lifecycle Management
 molecule/create: ## Create test environment
