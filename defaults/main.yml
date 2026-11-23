@@ -63,6 +63,13 @@ proxy_env: {}
 # ensure clients are managed in mondoo platform
 ensure_managed_client: false
 
+# hardened systemd settings for the cnspec service (Linux, deb and rpm packages)
+# "enable" copies the settings shipped with cnspec 14.12.0+ into the drop-in
+# directory of the service, "disable" removes that copy again.
+# By default (""), the role does not touch the drop-in directory.
+# Requires `registration_token`, since the service is only managed with a token.
+mondoo_service_hardening: ""
+
 # Update Task for cnspec (Linux)
 update_linux_enabled: false
 update_linux_cron_day: "*/3"

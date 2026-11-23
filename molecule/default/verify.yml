@@ -106,3 +106,208 @@
             content: "{{ mondoo_config_default.content | b64decode }}"
             dest: /etc/opt/mondoo/mondoo.yml
             mode: '0600'
+
+    # cnspec service hardening drop-in: converge ran with
+    # mondoo_service_hardening unset, so the role did not touch the drop-in
+    # directory. Apply the hardening tasks with "enable" (twice, the second
+    # run must not change anything), run the role with the variable unset and
+    # assert the copy is kept, then "disable" and assert only the hardening
+    # drop-in is removed. A dummy registration_token satisfies the variable
+    # check; the hardening tasks never use it and the host is not registered.
+    - name: Check cnspec service drop-in directory before the hardening tests
+      ansible.builtin.stat:
+        path: /etc/systemd/system/cnspec.service.d
+      register: hardening_dropin_dir_before
+
+    - name: Check hardening drop-in before the hardening tests
+      ansible.builtin.stat:
+        path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+      register: hardening_dropin_before
+
+    # The block mutates the drop-in directory; the always-restore puts the
+    # pre-test state back even when an assertion fails.
+    - name: Test cnspec service hardening enable, disable and unset
+      block:
+        - name: Apply hardening tasks with enable
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux_hardening
+          vars:
+            use_become: false
+            registration_token: "molecule-dummy-token"
+            mondoo_service_hardening: "enable"
+
+        - name: Read packaged hardening settings
+          ansible.builtin.slurp:
+            src: /usr/share/cnspec/systemd/hardening.conf
+          register: hardening_packaged
+
+        - name: Read hardening drop-in after enable
+          ansible.builtin.slurp:
+            src: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+          register: hardening_dropin
+
+        - name: Check hardening drop-in after enable
+          ansible.builtin.stat:
+            path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+          register: hardening_dropin_enabled
+
+        - name: Assert hardening drop-in is a root-owned copy of the packaged file
+          ansible.builtin.assert:
+            that:
+              - mondoo_hardening_dropin is changed
+              - hardening_dropin.content == hardening_packaged.content
+              - hardening_dropin_enabled.stat.isreg
+              - hardening_dropin_enabled.stat.mode == '0644'
+              - hardening_dropin_enabled.stat.pw_name == 'root'
+              - hardening_dropin_enabled.stat.gr_name == 'root'
+
+        - name: Reload systemd to pick up the drop-in
+          ansible.builtin.systemd:
+            daemon_reload: yes
+
+        - name: Read drop-ins of the cnspec service  # noqa: command-instead-of-module
+          ansible.builtin.command: systemctl show cnspec.service -p DropInPaths
+          register: hardening_dropin_paths
+          changed_when: false
+
+        - name: Assert systemd lists the hardening drop-in
+          ansible.builtin.assert:
+            that:
+              - "'/etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf' in hardening_dropin_paths.stdout"
+
+        - name: Apply hardening tasks with enable a second time
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux_hardening
+          vars:
+            use_become: false
+            registration_token: "molecule-dummy-token"
+            mondoo_service_hardening: "enable"
+
+        - name: Assert the second enable run reports no change
+          ansible.builtin.assert:
+            that:
+              - mondoo_hardening_dropin is not changed
+
+        - name: Apply Linux tasks with mondoo_service_hardening unset
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux
+          vars:
+            use_become: false
+
+        - name: Check hardening drop-in after the unset run
+          ansible.builtin.stat:
+            path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+          register: hardening_dropin_unset
+
+        - name: Assert an existing hardening drop-in is left in place when unset
+          ansible.builtin.assert:
+            that:
+              - hardening_dropin_unset.stat.exists
+              - hardening_dropin_unset.stat.checksum == hardening_dropin_enabled.stat.checksum
+
+        - name: Create an unrelated drop-in next to the hardening drop-in
+          ansible.builtin.copy:
+            content: "[Unit]\n"
+            dest: /etc/systemd/system/cnspec.service.d/10-molecule-other.conf
+            mode: '0644'
+
+        - name: Apply hardening tasks with disable
+          ansible.builtin.include_role:
+            name: ansible-mondoo
+            tasks_from: linux_hardening
+          vars:
+            use_become: false
+            registration_token: "molecule-dummy-token"
+            mondoo_service_hardening: "disable"
+
+        - name: Check hardening drop-in after disable
+          ansible.builtin.stat:
+            path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+          register: hardening_dropin_disabled
+
+        - name: Check unrelated drop-in after disable
+          ansible.builtin.stat:
+            path: /etc/systemd/system/cnspec.service.d/10-molecule-other.conf
+          register: hardening_other_dropin
+
+        - name: Assert only the hardening drop-in is removed
+          ansible.builtin.assert:
+            that:
+              - not hardening_dropin_disabled.stat.exists
+              - hardening_other_dropin.stat.exists
+
+        - name: Apply hardening tasks with an unsupported value
+          block:
+            - name: Include hardening tasks with an unsupported value
+              ansible.builtin.include_role:
+                name: ansible-mondoo
+                tasks_from: linux_hardening
+              vars:
+                use_become: false
+                registration_token: "molecule-dummy-token"
+                mondoo_service_hardening: "yes"
+
+            - name: Record that the unsupported value was accepted
+              ansible.builtin.set_fact:
+                hardening_invalid_value_accepted: true
+          rescue:
+            - name: Record the failure message for the unsupported value
+              ansible.builtin.set_fact:
+                hardening_invalid_value_msg: "{{ ansible_failed_result.msg }}"
+
+        - name: Apply hardening tasks without a registration token
+          block:
+            - name: Include hardening tasks without a registration token
+              ansible.builtin.include_role:
+                name: ansible-mondoo
+                tasks_from: linux_hardening
+              vars:
+                use_become: false
+                registration_token: ""
+                mondoo_service_hardening: "enable"
+
+            - name: Record that the missing registration token was accepted
+              ansible.builtin.set_fact:
+                hardening_missing_token_accepted: true
+          rescue:
+            - name: Record the failure message for the missing registration token
+              ansible.builtin.set_fact:
+                hardening_missing_token_msg: "{{ ansible_failed_result.msg }}"
+
+        - name: Check hardening drop-in after the rejected runs
+          ansible.builtin.stat:
+            path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+          register: hardening_dropin_rejected
+
+        - name: Assert unsupported input fails before anything is changed
+          ansible.builtin.assert:
+            that:
+              - hardening_invalid_value_accepted is not defined
+              - "'must be' in hardening_invalid_value_msg"
+              - hardening_missing_token_accepted is not defined
+              - "'registration_token' in hardening_missing_token_msg"
+              - not hardening_dropin_rejected.stat.exists
+      always:
+        - name: Remove the unrelated test drop-in
+          ansible.builtin.file:
+            path: /etc/systemd/system/cnspec.service.d/10-molecule-other.conf
+            state: absent
+
+        - name: Remove the hardening drop-in if it was not there before the tests
+          ansible.builtin.file:
+            path: /etc/systemd/system/cnspec.service.d/50-cnspec-hardening.conf
+            state: absent
+          when: not hardening_dropin_before.stat.exists
+
+        - name: Remove the drop-in directory if it was not there before the tests
+          ansible.builtin.file:
+            path: /etc/systemd/system/cnspec.service.d
+            state: absent
+          when: not hardening_dropin_dir_before.stat.exists
+
+        - name: Reload systemd after restoring the drop-in directory
+          ansible.builtin.systemd:
+            daemon_reload: yes
