@@ -26,13 +26,22 @@ jobs:
             tag: latest
           - image: geerlingguy/docker-fedora40-ansible
             tag: latest
-          - image: rsprta/opensuse-ansible
-            tag: latest
+          # built locally from molecule/images/opensuse-leap, see the build step
+          - image: mondoo-molecule/opensuse-leap
+            tag: "16.0"
+            build: molecule/images/opensuse-leap
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: "${{ github.repository }}"
+      - name: build test image
+        if: matrix.config.build
+        run: >-
+          docker build
+          --build-arg LEAP_VERSION=${{ matrix.config.tag }}
+          -t ${{ matrix.config.image }}:${{ matrix.config.tag }}
+          "${{ github.repository }}/${{ matrix.config.build }}"
       - name: molecule
         uses: robertdebock/molecule-action@d3e37309fc9c287d6a3507d172520d37df0e2dda # 6.0.1
         with:

@@ -1,9 +1,12 @@
+aarch64
 Ansiball
+initctl
 jsondata
 linux
 opensuse
 rhel
-rsprta
+tmpfiles
+udev
 urllib
 userspace
 Webclient
