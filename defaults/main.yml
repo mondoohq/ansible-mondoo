@@ -90,7 +90,8 @@ mondoo_rpm_repo: "{{ mondoo_releases_base_url }}/rpm/$basearch/"
 mondoo_rpm_gpgkey: "{{ mondoo_releases_base_url }}/rpm/pubkey.gpg"
 
 # zypper repo
-mondoo_zypper_repo: "{{ mondoo_releases_base_url }}/rpm/{{ ansible_userspace_architecture }}/"
+# ansible_userspace_architecture is only set on x86, fall back for aarch64
+mondoo_zypper_repo: "{{ mondoo_releases_base_url }}/rpm/{{ ansible_userspace_architecture | default(ansible_architecture) }}/"
 mondoo_zypper_gpgkey: "{{ mondoo_releases_base_url }}/rpm/pubkey.gpg"
 
 # download and transfer
